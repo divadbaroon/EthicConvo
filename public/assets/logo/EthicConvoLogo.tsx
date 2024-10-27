@@ -1,10 +1,10 @@
 import React from 'react';
 
-interface VizPILogoProps {
+interface EthicConvoProps {
   className?: string;
 }
 
-const VizPILogo: React.FC<VizPILogoProps> = ({ className }) => {
+const EthicConvo: React.FC<EthicConvoProps> = ({ className }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -30,4 +30,4 @@ const VizPILogo: React.FC<VizPILogoProps> = ({ className }) => {
   );
 };
 
-export default VizPILogo;
+export default EthicConvo;
