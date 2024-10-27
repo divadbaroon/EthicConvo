@@ -41,7 +41,7 @@ const Navbar = () => {
   const pathname = usePathname();
 
   // More specific path checking
-  const isRootPath = ['/', '/about', '/researchers', '/sessions'].includes(pathname);
+  const isRootPath = ['/home', '/home/about', '/home/researchers', '/sessions'].includes(pathname);
   const isSessionPathWithId = pathname.match(/^\/sessions\/[\w-]+/) || 
                              pathname.startsWith("/session-dashboard/");
 
