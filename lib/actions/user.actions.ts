@@ -178,24 +178,3 @@ export async function getActiveUsers() {
   }
 }
 
-// Real-time subscription helper (client-side only)
-// Use this in a React component
-export function subscribeToUserPresence(sessionId: string, callback: (users: User[]) => void) {
-  return supabaseAdmin
-    .channel(`session-${sessionId}-presence`)
-    .on('postgres_changes', 
-      { 
-        event: '*', 
-        schema: 'public', 
-        table: 'users',
-        filter: `session_id=eq.${sessionId}`
-      }, 
-      (payload) => {
-        // Fetch updated user list when changes occur
-        getUsersBySessionId(sessionId).then(users => {
-          if (users) callback(users)
-        })
-      }
-    )
-    .subscribe()
-}
