@@ -55,33 +55,48 @@ export async function POST(req: Request) {
   // Get the ID and type
   const { id } = evt.data;
   const eventType = evt.type;
-  console.log("9. Event type:", eventType); // Add this
+  console.log("9. Event type:", eventType);
 
   try {
     // CREATE
     if (eventType === "user.created") {
-      const { id, email_addresses, image_url, first_name, last_name, username } = evt.data;
+      const { id, username } = evt.data;
+      console.log("Received user data:", { id, username }); 
 
       if (!id) {
+        console.log("Missing user ID"); 
         return new Response("Missing user ID", { status: 400 });
       }
 
-      const newUser = await createUser({
-        username: username || `${first_name || ''}${last_name || ''}`,
-        clerk_id: id,
-      });
-
-      console.log("Create user result:", newUser);
-
-      if (newUser?.id) {
-        await clerkClient.users.updateUserMetadata(id, {
-          publicMetadata: {
-            userId: newUser.id,
-          },
-        });
+      if (!username) {
+        console.log("Missing username"); 
+        return new Response("Missing username", { status: 400 });
       }
 
-      return NextResponse.json({ message: "OK", user: newUser });
+      try {
+        console.log("Attempting to create user:", { id, username }); 
+        const newUser = await createUser({
+          username: username,
+          clerk_id: id,
+        });
+
+        console.log("Create user result:", newUser);
+
+        if (newUser?.id) {
+          console.log("Updating Clerk metadata"); 
+          await clerkClient.users.updateUserMetadata(id, {
+            publicMetadata: {
+              userId: newUser.id,
+            },
+          });
+          console.log("Clerk metadata updated"); 
+        }
+
+        return NextResponse.json({ message: "OK", user: newUser });
+      } catch (error) {
+        console.error("Error creating user:", error); 
+        throw error;
+      }
     }
 
     // UPDATE
