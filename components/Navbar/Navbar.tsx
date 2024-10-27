@@ -16,6 +16,7 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "@/constants"
+import { NavLinkProps } from "@/types"
 
 // Reusable NavLink component with active state
 const NavLink = ({ href, children, className }: NavLinkProps) => {
