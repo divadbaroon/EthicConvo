@@ -31,7 +31,7 @@ type User = {
 // CREATE
 export async function createUser(user: CreateUserParams) {
   try {
-    console.log("Creating user with data:", user); // Add this log
+    console.log("Creating user with data:", user); 
 
     const { data, error } = await supabaseAdmin
       .from('users')
@@ -43,15 +43,15 @@ export async function createUser(user: CreateUserParams) {
       .single();
 
     if (error) {
-      console.error("Supabase error:", error); // Add this log
+      console.error("Supabase error:", error); 
       throw error;
     }
 
-    console.log("Supabase success:", data); // Add this log
+    console.log("Supabase success:", data); 
     return data;
   } catch (error) {
-    console.error("Error in createUser:", error); // Better error logging
-    throw error; // Re-throw the error to handle it in the webhook
+    console.error("Error in createUser:", error); 
+    throw error; 
   }
 }
 
