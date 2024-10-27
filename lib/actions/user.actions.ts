@@ -1,95 +1,201 @@
-"use server";
+"use server"
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from "next/cache"
+import { supabaseAdmin } from "@/lib/database/supabase/admin"
+import { handleError } from "@/lib/utils"
 
-import { User } from "../database/models/user.model";
-import { connectToDatabase } from "../database/mongoose";
-import { handleError } from "../utils";
-import { CreateUserParams, UpdateUserParams, IUser } from "../../types";  
+// First, let's define our types
+type CreateUserParams = {
+  username: string
+  clerk_id: string
+  session_id?: string
+}
+
+type UpdateUserParams = {
+  username?: string
+  session_id?: string
+  last_active?: string
+  is_active?: boolean
+}
+
+type User = {
+  id: string
+  username: string
+  clerk_id: string
+  session_id: string | null
+  last_active: string | null
+  is_active: boolean
+  created_at: string
+}
 
 // CREATE
 export async function createUser(user: CreateUserParams) {
   try {
-    await connectToDatabase();
+    console.log("Creating user with data:", user); // Add this log
 
-    const newUser = await User.create(user);
+    const { data, error } = await supabaseAdmin
+      .from('users')
+      .insert({
+        username: user.username,
+        clerk_id: user.clerk_id
+      })
+      .select()
+      .single();
 
-    return JSON.parse(JSON.stringify(newUser)) as IUser;
+    if (error) {
+      console.error("Supabase error:", error); // Add this log
+      throw error;
+    }
+
+    console.log("Supabase success:", data); // Add this log
+    return data;
   } catch (error) {
-    handleError(error);
+    console.error("Error in createUser:", error); // Better error logging
+    throw error; // Re-throw the error to handle it in the webhook
   }
 }
 
 // READ
 export async function getUserById(userId: string) {
   try {
-    await connectToDatabase();
+    const { data, error } = await supabaseAdmin
+      .from('users')
+      .select('*')
+      .eq('clerk_id', userId)
+      .single()
 
-    const user = await User.findOne({ clerkId: userId });
+    if (error) throw error
+    if (!data) throw new Error("User not found")
 
-    if (!user) throw new Error("User not found");
-
-    return JSON.parse(JSON.stringify(user)) as IUser;
+    return data as User
   } catch (error) {
-    handleError(error);
+    handleError(error)
+    return null
   }
 }
 
 // UPDATE
-export async function updateUser(username: string, user: UpdateUserParams) {
+export async function updateUser(username: string, updates: UpdateUserParams) {
   try {
-    await connectToDatabase();
+    const { data, error } = await supabaseAdmin
+      .from('users')
+      .update({
+        username: updates.username,
+        session_id: updates.session_id,
+        last_active: updates.last_active,
+        is_active: updates.is_active
+      })
+      .eq('username', username)
+      .select()
+      .single()
 
-    const updatedUser = await User.findOneAndUpdate({ username }, user, {
-      new: true,
-    });
+    if (error) throw error
+    if (!data) throw new Error("User update failed")
 
-    if (!updatedUser) throw new Error("User update failed");
-    
-    return JSON.parse(JSON.stringify(updatedUser)) as IUser;
+    return data as User
   } catch (error) {
-    handleError(error);
+    handleError(error)
+    return null
   }
 }
 
 // DELETE
 export async function deleteUser(clerkId: string) {
   try {
-    await connectToDatabase();
+    const { data, error } = await supabaseAdmin
+      .from('users')
+      .delete()
+      .eq('clerk_id', clerkId)
+      .select()
+      .single()
 
-    // Find user to delete
-    const userToDelete = await User.findOne({ clerkId });
+    if (error) throw error
 
-    if (!userToDelete) {
-      throw new Error("User not found");
-    }
-
-    // Delete user
-    const deletedUser = await User.findByIdAndDelete(userToDelete._id);
-    revalidatePath("/");
-
-    return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) as IUser: null;
+    revalidatePath("/")
+    return data as User
   } catch (error) {
-    handleError(error);
+    handleError(error)
+    return null
   }
 }
 
-// Function to get all users by sessionId
+// Get users by session ID
 export async function getUsersBySessionId(sessionId: string) {
   try {
-    await connectToDatabase();
+    const { data, error } = await supabaseAdmin
+      .from('users')
+      .select('*')
+      .eq('session_id', sessionId)
 
-    // Fetching all users associated with the given sessionId
-    const users = await User.find({ sessionId });
-
-    if (!users || users.length === 0) {
-      throw new Error(`No users found for sessionId: ${sessionId}`);
+    if (error) throw error
+    if (!data || data.length === 0) {
+      throw new Error(`No users found for sessionId: ${sessionId}`)
     }
 
-    return JSON.parse(JSON.stringify(users)) as IUser[];
+    return data as User[]
   } catch (error) {
-    handleError(error);
-    return null;
+    handleError(error)
+    return null
   }
 }
 
+// New helper functions you might find useful:
+
+// Update user's active status
+export async function updateUserActivity(clerkId: string, isActive: boolean) {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('users')
+      .update({
+        is_active: isActive,
+        last_active: isActive ? new Date().toISOString() : null
+      })
+      .eq('clerk_id', clerkId)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data as User
+  } catch (error) {
+    handleError(error)
+    return null
+  }
+}
+
+// Get active users
+export async function getActiveUsers() {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('users')
+      .select('*')
+      .eq('is_active', true)
+
+    if (error) throw error
+    return data as User[]
+  } catch (error) {
+    handleError(error)
+    return null
+  }
+}
+
+// Real-time subscription helper (client-side only)
+// Use this in a React component
+export function subscribeToUserPresence(sessionId: string, callback: (users: User[]) => void) {
+  return supabaseAdmin
+    .channel(`session-${sessionId}-presence`)
+    .on('postgres_changes', 
+      { 
+        event: '*', 
+        schema: 'public', 
+        table: 'users',
+        filter: `session_id=eq.${sessionId}`
+      }, 
+      (payload) => {
+        // Fetch updated user list when changes occur
+        getUsersBySessionId(sessionId).then(users => {
+          if (users) callback(users)
+        })
+      }
+    )
+    .subscribe()
+}
