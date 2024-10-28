@@ -5,7 +5,7 @@ import { supabaseClient } from '@/lib/database/supabase/client';
 import type { Message } from '@/types';
 
 const openai = new OpenAI({
-  apiKey: "sk-0RObrqmC6DnQteT5g5RU1-CphqeL1pzKVWpmVAnq3eT3BlbkFJuOJ0brPh2a15AtQ61uNa6y-kInZ4goNkFj5SaTNeEA",
+    apiKey: process.env.OPENAI_API_KEY
 });
 
 export async function analyzeMessages(messages: Message[], sessionId: string, groupId: string) {
