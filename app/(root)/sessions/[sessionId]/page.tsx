@@ -21,47 +21,158 @@ import { Session, SessionPageProps } from "@/types"
 
 import { getSessionById, updateSession } from '@/lib/actions/session.actions';
 
+import { supabaseClient } from '@/lib/database/supabase/client'
+
 export default function SessionPage({ params }: SessionPageProps) {
     const router = useRouter();
     const sessionId = params.sessionId;
-    console.log(sessionId)
     const [sessionData, setSessionData] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [inviteLink, setInviteLink] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [recentActivity, setRecentActivity] = useState({
+        recentJoins: 0,
+        recentGroups: 0,
+        changeType: null as 'added' | 'removed' | null
+    });
 
+    // Initial data fetch
     useEffect(() => {
-    if (!sessionId) {
-        setError("No session ID provided");
-        setLoading(false);
-        return;
-    }
-
-    const fetchSessionData = async () => {
-        try {
-        console.log("Fetching session data for ID:", sessionId);
-        const session = await getSessionById(sessionId);
-        
-        if (!session) {
-            setError("Session not found");
-            setSessionData(null);
-        } else {
-            console.log("Session data received:", session);
-            setSessionData(session);
-            setError(null);
+        if (!sessionId) {
+            setError("No session ID provided");
+            setLoading(false);
+            return;
         }
-        } catch (error) {
-        console.error("Error fetching session:", error);
-        setError("Failed to load session data");
-        setSessionData(null);
-        } finally {
-        setLoading(false);
-        }
-    };
 
-    fetchSessionData();
+        const fetchSessionData = async () => {
+            try {
+                console.log("Fetching session data for ID:", sessionId);
+                const session = await getSessionById(sessionId);
+                
+                if (!session) {
+                    setError("Session not found");
+                    setSessionData(null);
+                } else {
+                    console.log("Session data received:", session);
+                    setSessionData(session);
+                    setError(null);
+                }
+            } catch (error) {
+                console.error("Error fetching session:", error);
+                setError("Failed to load session data");
+                setSessionData(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSessionData();
+    }, [sessionId]);
+
+    // Set up real-time subscriptions
+    useEffect(() => {
+        if (!sessionId) return;
+
+        // Subscribe to session changes
+        const sessionSubscription = supabaseClient
+            .channel('session_changes')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'sessions',
+                    filter: `id=eq.${sessionId}`
+                },
+                async (payload) => {
+                    const newData = payload.new as Session
+                    setSessionData(prevData => {
+                        if (!prevData) return newData;
+                        
+                        // Track recent changes
+                        const newRecentJoins = newData.participant_count - prevData.participant_count;
+                        
+                        if (newRecentJoins > 0) {
+                            setRecentActivity(prev => ({
+                                ...prev,
+                                recentJoins: newRecentJoins
+                            }));
+
+                            // Reset recent joins after 5 seconds
+                            setTimeout(() => {
+                                setRecentActivity(prev => ({
+                                    ...prev,
+                                    recentJoins: 0
+                                }));
+                            }, 5000);
+                        }
+
+                        return newData;
+                    });
+                }
+            )
+            .subscribe();
+
+        // Subscribe to groups changes
+        const groupsSubscription = supabaseClient
+            .channel('group_changes')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'groups',
+                    filter: `session_id=eq.${sessionId}`
+                },
+                async () => {
+                    // Fetch updated session data with groups
+                    const { data } = await supabaseClient
+                        .from('sessions')
+                        .select(`
+                            *,
+                            groups (*)
+                        `)
+                        .eq('id', sessionId)
+                        .single();
+
+                        if (data) {
+                            setSessionData(prevData => {
+                                if (!prevData) return data as Session; 
+                        
+                                const typedData = data as Session;  
+                                const newRecentGroups = 
+                                    (typedData.groups?.length || 0) - (prevData.groups?.length || 0);
+                        
+                                if (newRecentGroups !== 0) {
+                                    setRecentActivity(prev => ({
+                                        ...prev,
+                                        recentGroups: Math.abs(newRecentGroups),
+                                        changeType: newRecentGroups > 0 ? 'added' : 'removed'
+                                    }));
+                        
+                                    setTimeout(() => {
+                                        setRecentActivity(prev => ({
+                                            ...prev,
+                                            recentGroups: 0,
+                                            changeType: null
+                                        }));
+                                    }, 5000);
+                                }
+                        
+                                return typedData;  
+                            });
+                        }
+                }
+            )
+            .subscribe();
+
+        // Cleanup subscriptions
+        return () => {
+            sessionSubscription.unsubscribe();
+            groupsSubscription.unsubscribe();
+        };
     }, [sessionId]);
 
     // Loading state
@@ -284,8 +395,10 @@ export default function SessionPage({ params }: SessionPageProps) {
                                                 {sessionData.groups?.length || 0}
                                             </div>
                                             <p className="text-xs text-muted-foreground">
-                                                {sessionData.groups && sessionData.groups.length > 0 
-                                                    ? `${sessionData.groups.length} created recently`
+                                                {recentActivity.recentGroups > 0 
+                                                    ? `${recentActivity.recentGroups} ${recentActivity.changeType === 'added' ? 'created' : 'removed'} recently`
+                                                    : sessionData.groups && sessionData.groups.length > 0 
+                                                    ? `${sessionData.groups.length} total groups`
                                                     : 'No groups created yet'}
                                             </p>
                                         </CardContent>

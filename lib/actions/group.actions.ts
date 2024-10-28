@@ -37,15 +37,15 @@ export async function createGroup(groupData: CreateGroupParams) {
   
       if (fetchError) throw fetchError;
       
-      const typedGroup = group as Group; 
+      const typedGroup = group as Group;
   
-      // Check if group is full
+      // Simple capacity check
       if (typedGroup.current_occupancy >= typedGroup.max_occupancy) {
         throw new Error("Group is full");
       }
   
-      // Update group
-      const { data, error } = await supabaseAdmin
+      // If group has capacity, proceed with join
+      const { data: updatedGroup, error: updateError } = await supabaseAdmin
         .from('groups')
         .update({
           current_occupancy: typedGroup.current_occupancy + 1,
@@ -55,11 +55,16 @@ export async function createGroup(groupData: CreateGroupParams) {
         .select()
         .single();
   
-      if (error) throw error;
-      return data as Group;
+      if (updateError) throw updateError;
+      return updatedGroup as Group;
+  
     } catch (error) {
       console.error("Error joining group:", error);
-      throw error;
+      // Specifically check for the full group error
+      if (error instanceof Error && error.message === "Group is full") {
+        throw error; // Propagate this specific error to trigger page refresh
+      }
+      throw new Error("Failed to join group");
     }
   }
 

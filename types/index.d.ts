@@ -115,7 +115,7 @@ export type Session = {
 export type Group = {
   id: string;
   name: string;
-  session_id: string | null;
+  session_id: string;
   created_at: string;
   number: number;
   max_occupancy: number;

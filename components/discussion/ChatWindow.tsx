@@ -21,9 +21,9 @@ function ChatWindow({ groupId }: ChatWindowProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!groupId) return;
+    if (!groupId || !user) return;
 
-    // Fetch initial messages
+    // Fetch initial messages with authenticated client
     const fetchMessages = async () => {
       try {
         const { data, error } = await supabaseClient
@@ -65,16 +65,7 @@ function ChatWindow({ groupId }: ChatWindowProps) {
     return () => {
       channel.unsubscribe();
     };
-  }, [groupId]);
-
-  const scrollToBottom = () => {
-    if (scrollAreaRef.current) {
-      const scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollElement) {
-        scrollElement.scrollTop = scrollElement.scrollHeight;
-      }
-    }
-  };
+  }, [groupId, user]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,6 +91,15 @@ function ChatWindow({ groupId }: ChatWindowProps) {
     }
   };
 
+  const scrollToBottom = () => {
+    if (scrollAreaRef.current) {
+      const scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollElement) {
+        scrollElement.scrollTop = scrollElement.scrollHeight;
+      }
+    }
+  };
+
   if (loading) {
     return (
       <Card className="w-full h-[90vh] flex items-center justify-center">
@@ -107,6 +107,13 @@ function ChatWindow({ groupId }: ChatWindowProps) {
       </Card>
     );
   }
+
+   // Helper function to group messages by user and time
+   const shouldGroupMessage = (currentMsg: Message, prevMsg: Message | null) => {
+    if (!prevMsg) return false;
+    return currentMsg.user_id === prevMsg.user_id && 
+           new Date(currentMsg.created_at).getTime() - new Date(prevMsg.created_at).getTime() < 60000;
+  };
 
   return (
     <Card className="w-full h-[90vh] flex flex-col">
@@ -116,41 +123,68 @@ function ChatWindow({ groupId }: ChatWindowProps) {
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden p-0" ref={scrollAreaRef}>
         <ScrollArea className="h-full px-4">
-          {messages.map((message) => (
-            <div 
-              key={message.id} 
-              className={`flex items-start space-x-4 mb-4 ${
-                message.user_id === user?.id ? 'flex-row-reverse space-x-reverse' : ''
-              }`}
-            >
-              <Avatar>
-                <AvatarImage src={`/placeholder.svg?height=40&width=40`} alt={message.username} />
-                <AvatarFallback>{message.username[0]}</AvatarFallback>
-              </Avatar>
-              <div className={`flex-1 space-y-1 ${
-                message.user_id === user?.id ? 'items-end' : ''
-              }`}>
-                <div className={`flex items-center space-x-2 ${
-                  message.user_id === user?.id ? 'flex-row-reverse space-x-reverse' : ''
-                }`}>
-                  <span className="font-medium">{message.username}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(message.created_at).toLocaleTimeString([], { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
-                  </span>
-                </div>
-                <div className={`rounded-lg p-3 ${
-                  message.user_id === user?.id 
-                    ? 'bg-blue-100 ml-auto' 
-                    : 'bg-gray-100'
-                }`}>
-                  <p className="text-sm">{message.content}</p>
+          {messages.map((message, index) => {
+            const prevMessage = index > 0 ? messages[index - 1] : null;
+            const isGrouped = shouldGroupMessage(message, prevMessage);
+            const isCurrentUser = message.user_id === user?.id;
+            const showTimestamp = !isGrouped || index === messages.length - 1;
+            
+            return (
+              <div key={message.id} className="mb-4">
+                <div className={`flex items-end gap-2 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
+                  {!isCurrentUser && (
+                    <div className={`flex-shrink-0 ${isGrouped ? 'invisible' : ''}`}>
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={message.username} />
+                        <AvatarFallback className="text-xs">{message.username[0]}</AvatarFallback>
+                      </Avatar>
+                    </div>
+                  )}
+                  <div className={`flex flex-col ${isCurrentUser ? 'items-end' : 'items-start'} max-w-[65%]`}>
+                    {!isGrouped && (
+                      <span className="text-xs font-medium text-gray-500 mb-1">
+                        {message.username}
+                      </span>
+                    )}
+                    <div
+                      className={`inline-block px-4 py-2 
+                        ${isCurrentUser 
+                          ? 'bg-blue-500 text-white' 
+                          : 'bg-gray-100 text-gray-900'
+                        }
+                        ${isGrouped 
+                          ? 'rounded-2xl' 
+                          : isCurrentUser
+                            ? 'rounded-t-2xl rounded-l-2xl rounded-br-md' 
+                            : 'rounded-t-2xl rounded-r-2xl rounded-bl-md'
+                        }
+                      `}
+                    >
+                      <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
+                        {message.content}
+                      </p>
+                    </div>
+                    {showTimestamp && (
+                      <span className="text-[11px] text-gray-400 mt-1">
+                        {new Date(message.created_at).toLocaleTimeString([], { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </span>
+                    )}
+                  </div>
+                  {isCurrentUser && (
+                    <div className={`flex-shrink-0 ${isGrouped ? 'invisible' : ''}`}>
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={message.username} />
+                        <AvatarFallback className="text-xs">{message.username[0]}</AvatarFallback>
+                      </Avatar>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </ScrollArea>
       </CardContent>
       <CardFooter className="flex-shrink-0 p-4 bg-gray-50">
