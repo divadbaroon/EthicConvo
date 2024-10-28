@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { createTemporaryUser } from '@/lib/actions/user.actions';
 import { getSessionById } from '@/lib/actions/session.actions';
@@ -10,13 +10,14 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isLoaded, isSignedIn, userId } = useAuth();
+  const { signIn } = useSignIn();
   const router = useRouter();
 
   useEffect(() => {
     const initializeUser = async () => {
       try {
         // Wait for Clerk to load
-        if (!isLoaded) return;
+        if (!isLoaded || !signIn) return;
 
         // If user is already signed in, redirect to group selection
         if (isSignedIn && userId) {
@@ -46,8 +47,19 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
         // Store temp user ID
         localStorage.setItem('tempUserId', userData.id);
 
-        // Redirect to sign-in page with credentials
-        window.location.href = `/sign-in?username=${username}&password=${password}&redirect=/join/${params.sessionId}/group`;
+        // Sign in the user automatically
+        console.log('Attempting automatic sign in...');
+        const signInAttempt = await signIn.create({
+          identifier: `${username}@temporary.edu`,
+          password,
+        });
+
+        if (signInAttempt.status === "complete") {
+          console.log('Sign in successful, redirecting...');
+          router.push(`/join/${params.sessionId}/group`);
+        } else {
+          throw new Error("Failed to complete sign in");
+        }
         
       } catch (error) {
         console.error("Error initializing user:", error);
@@ -58,7 +70,7 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
     };
 
     initializeUser();
-  }, [isLoaded, isSignedIn, userId, params.sessionId, router]);
+  }, [isLoaded, isSignedIn, userId, params.sessionId, router, signIn]);
 
   if (loading || !isLoaded) {
     return (
