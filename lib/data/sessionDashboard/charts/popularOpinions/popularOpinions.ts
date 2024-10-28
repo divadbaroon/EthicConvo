@@ -4,11 +4,12 @@ import { TimeSeriesData, TopicData } from '@/types';
 export const popularOpinionsQ1: TopicData[] = [
   {
     topic: "Q1 Answer 1",
-    topicText: "Location sharing in fitness apps needs way better privacy controls",
+    topicText: "AI can detect personal traits like orientation and politics with high accuracy",
     groups: [
       { groupId: "group 2", timestamp: 10 },
-      { groupId: "group 3", timestamp: 100 },
-      { groupId: "group 18", timestamp: 200 },
+      { groupId: "group 3", timestamp: 30 },
+      { groupId: "group 3", timestamp: 30 },
+      { groupId: "group 18", timestamp: 55 },
       { groupId: "group 20", timestamp: 300 },
       { groupId: "group 25", timestamp: 400 },
       { groupId: "group 32", timestamp: 500 },
@@ -26,10 +27,11 @@ export const popularOpinionsQ1: TopicData[] = [
   },
   {
     topic: "Q1 Answer 2", 
-    topicText: "People had no idea their workout data could reveal sensitive info",
+    topicText: "Marginalized groups could face discrimination based on AI facial analysis",
     groups: [
       { groupId: "group 5", timestamp: 15 },
-      { groupId: "group 10", timestamp: 120 },
+      { groupId: "group 10", timestamp: 30 },
+      { groupId: "group 10", timestamp: 30 },
       { groupId: "group 12", timestamp: 240 },
       { groupId: "group 26", timestamp: 360 },
       { groupId: "group 29", timestamp: 480 },
@@ -48,10 +50,11 @@ export const popularOpinionsQ1: TopicData[] = [
   },
   {
     topic: "Q1 Answer 3",
-    topicText: "Military personnel got exposed just trying to track their runs",
+    topicText: "People's social media photos could reveal traits they want to keep private",
     groups: [
       { groupId: "group 21", timestamp: 20 },
-      { groupId: "group 27", timestamp: 130 },
+      { groupId: "group 27", timestamp: 45 },
+      { groupId: "group 27", timestamp: 45 },
       { groupId: "group 33", timestamp: 250 },
       { groupId: "group 38", timestamp: 370 },
       { groupId: "group 40", timestamp: 490 },
@@ -70,15 +73,12 @@ export const popularOpinionsQ1: TopicData[] = [
   },
   {
     topic: "Q1 Answer 4",
-    topicText: "Default public settings put everyone at risk without them knowing",
+    topicText: "Companies could secretly screen employees or customers using facial analysis",
     groups: [
       { groupId: "group 25", timestamp: 25 },
-      { groupId: "group 26", timestamp: 140 },
+      { groupId: "group 26", timestamp: 55 },
       { groupId: "group 30", timestamp: 280 },
       { groupId: "group 35", timestamp: 400 },
-      { groupId: "group 39", timestamp: 500 },
-      { groupId: "group 43", timestamp: 580 },
-      { groupId: "group 45", timestamp: 599 }
     ],
     counts: [
       { timestamp: 25, count: 1 },
@@ -92,11 +92,11 @@ export const popularOpinionsQ1: TopicData[] = [
   },
   {
     topic: "Q1 Answer 5",
-    topicText: "Apps need to balance being social with protecting user privacy",
+    topicText: "Government surveillance could profile citizens based on predicted characteristics",
     groups: [
       { groupId: "group 28", timestamp: 30 },
-      { groupId: "group 29", timestamp: 150 },
-      { groupId: "group 31", timestamp: 290 },
+      { groupId: "group 29", timestamp: 50 },
+      { groupId: "group 31", timestamp: 70 },
       { groupId: "group 37", timestamp: 410 },
       { groupId: "group 40", timestamp: 510 },
       { groupId: "group 46", timestamp: 590 },
@@ -112,12 +112,12 @@ export const popularOpinionsQ1: TopicData[] = [
       { timestamp: 599, count: 14 }
     ]
   }
- ];
+];
  
- export const popularOpinionsQ2: TopicData[] = [
+export const popularOpinionsQ2: TopicData[] = [
   {
     topic: "Q2 Answer 1",
-    topicText: "Heat map feature made sensitive locations super obvious",
+    topicText: "Face recognition is being used everywhere without people knowing",
     groups: [
       { groupId: "group 1", timestamp: 35 },
       { groupId: "group 14", timestamp: 140 },
@@ -139,7 +139,7 @@ export const popularOpinionsQ1: TopicData[] = [
   },
   {
     topic: "Q2 Answer 2",
-    topicText: "Privacy settings were too complicated and hard to find",
+    topicText: "Social media makes it easy to collect massive amounts of face data",
     groups: [
       { groupId: "group 13", timestamp: 25 },
       { groupId: "group 19", timestamp: 150 },
@@ -161,7 +161,7 @@ export const popularOpinionsQ1: TopicData[] = [
   },
   {
     topic: "Q2 Answer 3",
-    topicText: "Combining everyone's data made patterns way too visible",
+    topicText: "AI systems can analyze faces faster and more accurately than humans",
     groups: [
       { groupId: "group 24", timestamp: 70 },
       { groupId: "group 26", timestamp: 170 },
@@ -182,8 +182,8 @@ export const popularOpinionsQ1: TopicData[] = [
     ]
   },
   {
-    topic: "Q2 Answer 4", 
-    topicText: "App didn't consider security risks of showing location patterns",
+    topic: "Q2 Answer 4",
+    topicText: "No way to opt out of having your face analyzed in public spaces",
     groups: [
       { groupId: "group 31", timestamp: 30 },
       { groupId: "group 32", timestamp: 150 },
@@ -205,7 +205,7 @@ export const popularOpinionsQ1: TopicData[] = [
   },
   {
     topic: "Q2 Answer 5",
-    topicText: "No way to hide sensitive areas from the global heat map",
+    topicText: "Current systems don't need permission to analyze personal traits",
     groups: [
       { groupId: "group 34", timestamp: 35 },
       { groupId: "group 35", timestamp: 160 },
@@ -225,12 +225,12 @@ export const popularOpinionsQ1: TopicData[] = [
       { timestamp: 599, count: 12 }
     ]
   }
- ];
- 
- export const popularOpinionsQ3: TopicData[] = [
+];
+
+export const popularOpinionsQ3: TopicData[] = [
   {
     topic: "Q3 Answer 1",
-    topicText: "Make privacy settings super clear and default to private",
+    topicText: "Require explicit consent before analyzing anyone's facial data",
     groups: [
       { groupId: "group 5", timestamp: 15 },
       { groupId: "group 16", timestamp: 160 },
@@ -252,7 +252,7 @@ export const popularOpinionsQ1: TopicData[] = [
   },
   {
     topic: "Q3 Answer 2",
-    topicText: "Add automatic blurring for sensitive locations on maps",
+    topicText: "Ban using facial analysis to detect sensitive personal traits",
     groups: [
       { groupId: "group 21", timestamp: 50 },
       { groupId: "group 29", timestamp: 210 },
@@ -274,7 +274,7 @@ export const popularOpinionsQ1: TopicData[] = [
   },
   {
     topic: "Q3 Answer 3",
-    topicText: "Let users opt out of showing up on public heat maps",
+    topicText: "Develop AI-resistant filters that protect privacy in photos",
     groups: [
       { groupId: "group 13", timestamp: 25 },
       { groupId: "group 19", timestamp: 150 },
@@ -296,7 +296,7 @@ export const popularOpinionsQ1: TopicData[] = [
   },
   {
     topic: "Q3 Answer 4",
-    topicText: "Create no-track zones around military bases and sensitive areas",
+    topicText: "Create strict laws about how facial data can be collected and used",
     groups: [
       { groupId: "group 1", timestamp: 35 },
       { groupId: "group 7", timestamp: 160 },
@@ -318,7 +318,7 @@ export const popularOpinionsQ1: TopicData[] = [
   },
   {
     topic: "Q3 Answer 5",
-    topicText: "Give better warnings about risks when sharing location data",
+    topicText: "Make companies clearly warn users about facial recognition capabilities",
     groups: [
       { groupId: "group 37", timestamp: 20 },
       { groupId: "group 38", timestamp: 150 },
@@ -339,6 +339,7 @@ export const popularOpinionsQ1: TopicData[] = [
     ]
   }
 ];
+
 
 // Combined export for all popular opinions
 export const popularOpinionsData: Record<number, TopicData[]> = {

@@ -1,15 +1,15 @@
 export const discussionTasks: { [key: number]: DiscussionTask } = {
   1: {
-    title: "Analyze stakeholder impact",
-    subtitle: "What were the immediate and long-term implications of Strava's heat map data exposure for different stakeholders?"
+    title: "Problem Understanding",
+    subtitle: "What specific privacy vulnerabilities arise from facial recognition technology's ability to detect intimate traits with accuracy exceeding human capabilities?"
   },
   2: {
-    title: "Examine technical factors",
-    subtitle: "How did Strava's data visualization and sharing practices contribute to the privacy breach?"
+    title: "Technical Analysis",
+    subtitle: "How does the widespread deployment of facial recognition systems in everyday settings (social media, public spaces, government surveillance) amplify these privacy risks?"
   },
   3: {
-    title: "Develop comprehensive solutions",
-    subtitle: "What combination of technical solutions, policy changes, and user education would effectively prevent future exposures?"
+    title: "Proposed solutions",
+    subtitle: "What policy changes or technological safeguards should be implemented to protect sensitive personal attributes from automated detection?"
   }
 };
 

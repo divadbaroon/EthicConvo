@@ -12,11 +12,10 @@ export interface TopicData {
 }
 
 // Question 1: Problem Understanding
-// Question 1: Problem Understanding
 export const groupAnswersQ1: TopicData[] = [
   {
-    "topic": "Q1 Answer 1",
-    "topicText": "Soldiers using workout apps accidentally exposed secret military bases",
+    "topic": "Q1 Answer 1", 
+    "topicText": "AI can figure out super personal stuff like politics and orientation just from photos",
     "groups": [
       { "groupId": "group 13", "timestamp": 15 },
       { "groupId": "group 16", "timestamp": 30 }
@@ -28,7 +27,7 @@ export const groupAnswersQ1: TopicData[] = [
   },
   {
     "topic": "Q1 Answer 2",
-    "topicText": "App basically created a map showing where military personnel work out",
+    "topicText": "The tech is more accurate than humans at guessing personal traits from faces",
     "groups": [
       { "groupId": "group 1", "timestamp": 45 }
     ],
@@ -37,8 +36,8 @@ export const groupAnswersQ1: TopicData[] = [
     ]
   },
   {
-    "topic": "Q1 Answer 3",
-    "topicText": "Regular users didn't know their daily running routes would be public globally",
+    "topic": "Q1 Answer 3", 
+    "topicText": "People don't know their social media photos could reveal private info about them",
     "groups": [
       { "groupId": "group 21", "timestamp": 60 },
       { "groupId": "group 22", "timestamp": 75 }
@@ -50,11 +49,10 @@ export const groupAnswersQ1: TopicData[] = [
   }
 ];
 
-// Question 2: Technical Analysis
 export const groupAnswersQ2: TopicData[] = [
   {
     "topic": "Q2 Answer 1",
-    "topicText": "Default settings made everyone's data public without clearly telling users",
+    "topicText": "Cameras are everywhere now - stores, streets, phones - collecting face data",
     "groups": [
       { "groupId": "group 5", "timestamp": 90 },
       { "groupId": "group 10", "timestamp": 105 }
@@ -65,8 +63,8 @@ export const groupAnswersQ2: TopicData[] = [
     ]
   },
   {
-    "topic": "Q2 Answer 2",
-    "topicText": "Heat map feature combined everyone's data making patterns super obvious",
+    "topic": "Q2 Answer 2", 
+    "topicText": "Companies could use this to discriminate based on predicted traits",
     "groups": [
       { "groupId": "group 11", "timestamp": 120 },
       { "groupId": "group 12", "timestamp": 135 }
@@ -78,7 +76,7 @@ export const groupAnswersQ2: TopicData[] = [
   },
   {
     "topic": "Q2 Answer 3",
-    "topicText": "No way to opt out of being included in the global heat map visualization",
+    "topicText": "Government could use face recognition to profile and track people",
     "groups": [
       { "groupId": "group 24", "timestamp": 150 }
     ],
@@ -88,11 +86,10 @@ export const groupAnswersQ2: TopicData[] = [
   }
 ];
 
-// Question 3: Solution Development
 export const groupAnswersQ3: TopicData[] = [
   {
     "topic": "Q3 Answer 1",
-    "topicText": "Apps should make privacy settings super clear and default to private",
+    "topicText": "Need laws to stop companies from analyzing faces without permission",
     "groups": [
       { "groupId": "group 19", "timestamp": 165 }
     ],
@@ -102,7 +99,7 @@ export const groupAnswersQ3: TopicData[] = [
   },
   {
     "topic": "Q3 Answer 2",
-    "topicText": "Maybe blur or hide activity in sensitive locations automatically",
+    "topicText": "Maybe add filters that mess up AI face recognition but look normal to humans",
     "groups": [
       { "groupId": "group 2", "timestamp": 180 },
       { "groupId": "group 3", "timestamp": 195 },
@@ -118,7 +115,7 @@ export const groupAnswersQ3: TopicData[] = [
   },
   {
     "topic": "Q3 Answer 3",
-    "topicText": "Users need better warnings about how their location data could be used",
+    "topicText": "People should get warnings about AI analysis before posting photos online",
     "groups": [
       { "groupId": "group 21", "timestamp": 240 },
       { "groupId": "group 22", "timestamp": 255 }
@@ -130,26 +127,20 @@ export const groupAnswersQ3: TopicData[] = [
   }
 ];
 
-export const groupAnswersData = {
-  1: groupAnswersQ1,
-  2: groupAnswersQ2,
-  3: groupAnswersQ3
-};
-
 export const GROUP_ANSWERS_CONFIG = {
   id: 'groupAnswers',
   title: 'Group Answers',
-  dataKey: 'groupAnswers',
+  dataKey: 'groupAnswers', 
   type: 'count' as const,
   visible: true,
   description: {
-    1: 'Understanding the privacy breach',
-    2: 'Analysis of technical problems',
-    3: 'Proposed privacy solutions'
+    1: 'Understanding privacy risks',
+    2: 'Real-world implications',
+    3: 'Potential solutions'
   }
 };
 
-// Keeping original participant count mapping
+// Participant count mapping for groups remains the same
 export const groupParticipantCountsMap: { [groupId: string]: number } = {
   'group 1': 4, 'group 2': 6, 'group 3': 2, 'group 4': 5,
   'group 5': 3, 'group 6': 4, 'group 7': 6, 'group 8': 2,

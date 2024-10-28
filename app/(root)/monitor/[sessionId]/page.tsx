@@ -434,11 +434,13 @@ const toggleDrawing = () => {
   // Sample group answers data
   const [groupAnswers] = useState<TopicData[]>([
     {
-      "topic": "Answer 1",
-      "topicText": "People's workout routes were showing up on a global map without them knowing",
+      "topic": "Q1 Answer 1",
+      "topicText": "AI can predict personal characteristics from your face like politics and orientation",
       "groups": [
         { "groupId": "group 13", "timestamp": 15 },
-        { "groupId": "group 16", "timestamp": 30 }
+        { "groupId": "group 16", "timestamp": 30 },
+        { "groupId": "group 16", "timestamp": 30 },
+        { "groupId": "group 16", "timestamp": 45 }
       ],
       "counts": [
         { "timestamp": 15, "count": 1 },
@@ -446,12 +448,10 @@ const toggleDrawing = () => {
       ]
     },
     {
-      "topic": "Answer 2",
-      "topicText": "The app should've warned users their data would be public and easy to find",
+      "topic": "Q1 Answer 2",
+      "topicText": "Social media photos are being analyzed without people knowing what can be revealed",
       "groups": [
-        { "groupId": "group 5", "timestamp": 45 },
-        { "groupId": "group 10", "timestamp": 60 },
-        { "groupId": "group 11", "timestamp": 75 },
+        { "groupId": "group 5", "timestamp": 15 },
         { "groupId": "group 12", "timestamp": 90 },
         { "groupId": "group 19", "timestamp": 105 }
       ],
@@ -464,10 +464,11 @@ const toggleDrawing = () => {
       ]
     },
     {
-      "topic": "Answer 3",
-      "topicText": "Military personnel didn't realize tracking their workouts could reveal base locations",
+      "topic": "Q1 Answer 3",
+      "topicText": "Face recognition is everywhere now and is collecting data constantly",
       "groups": [
-        { "groupId": "group 21", "timestamp": 120 },
+        { "groupId": "group 21", "timestamp": 55 },
+        { "groupId": "group 21", "timestamp": 75 },
         { "groupId": "group 22", "timestamp": 135 },
         { "groupId": "group 24", "timestamp": 150 }
       ],
@@ -478,9 +479,11 @@ const toggleDrawing = () => {
       ]
     },
     {
-      "topic": "Answer 4",
-      "topicText": "Default settings should be private - make people choose to share data",
+      "topic": "Q1 Answer 4",
+      "topicText": "Need laws to stop companies from analyzing faces without permission",
       "groups": [
+        { "groupId": "group 21", "timestamp": 55 },
+        { "groupId": "group 21", "timestamp": 75 },
         { "groupId": "group 1", "timestamp": 165 }
       ],
       "counts": [
@@ -488,8 +491,8 @@ const toggleDrawing = () => {
       ]
     },
     {
-      "topic": "Answer 5",
-      "topicText": "App needs better privacy controls and clear warnings about location sharing",
+      "topic": "Q2 Answer 5",
+      "topicText": "Apps should warn people about AI analysis and let them opt out of face recognition",
       "groups": [
         { "groupId": "group 2", "timestamp": 180 },
         { "groupId": "group 3", "timestamp": 195 },
