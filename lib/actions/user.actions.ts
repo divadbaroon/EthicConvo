@@ -28,6 +28,7 @@ type User = {
   last_active: string | null
   is_active: boolean
   created_at: string
+  temp_password?: string
 }
 
 // CREATE
@@ -186,7 +187,7 @@ export async function createTemporaryUser(sessionId: string) {
     const randomUsername = `Student_${Math.random().toString(36).substring(2, 8)}`;
     const temporaryPassword = Math.random().toString(36);
 
-    // Create user in Clerk using emailAddress strategy
+    // Create user in Clerk
     const clerkUser = await clerkClient.users.createUser({
       emailAddress: [`${randomUsername}@temporary.edu`],
       password: temporaryPassword,
@@ -194,19 +195,27 @@ export async function createTemporaryUser(sessionId: string) {
       username: randomUsername,
     });
 
-    // Create user in Supabase
+    // Create user in Supabase with temp_password
     const { data: user, error } = await supabaseAdmin
       .from('users')
       .insert({
         username: randomUsername,
         clerk_id: clerkUser.id,
         role: 'student',
-        session_id: sessionId
+        session_id: sessionId,
+        temp_password: temporaryPassword, // Store the temporary password
+        is_active: true,
+        last_active: new Date().toISOString()
       })
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Error creating user in database:", error);
+      // Clean up Clerk user if database insert fails
+      await clerkClient.users.deleteUser(clerkUser.id);
+      throw error;
+    }
 
     return {
       username: randomUsername,
@@ -216,5 +225,27 @@ export async function createTemporaryUser(sessionId: string) {
   } catch (error) {
     console.error("Error creating temporary user:", error);
     throw error;
+  }
+}
+
+export async function getUserBySessionId(sessionId: string) {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('users')
+      .select('*')
+      .eq('session_id', sessionId)
+      .eq('role', 'student') // Ensure we only get temporary student users
+      .single();
+
+    if (error) {
+      console.error("Error fetching user by session ID:", error);
+      return null;
+    }
+
+    return data as User;
+  } catch (error) {
+    console.error("Error in getUserBySessionId:", error);
+    handleError(error);
+    return null;
   }
 }
