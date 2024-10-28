@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import { createTemporaryUser, getUserBySessionId } from '@/lib/actions/user.actions';
+import { createTemporaryUser, getUserBySessionId, deleteUser } from '@/lib/actions/user.actions';
 import { getSessionById } from '@/lib/actions/session.actions';
 
 export default function JoinSession({ params }: { params: { sessionId: string }}) {
@@ -13,13 +13,10 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
   const router = useRouter();
 
   useEffect(() => {
-    let redirectTimeout: NodeJS.Timeout;
-    
     const initializeUser = async () => {
       try {
         console.log('Starting user initialization...');
         
-        // Check if sign-in is available
         if (!signInHelper?.signIn || !signInHelper?.setActive) {
           console.error('SignIn helper not available:', signInHelper);
           setError("Authentication service not available");
@@ -29,7 +26,7 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
 
         const { signIn, setActive } = signInHelper;
 
-        // First check if session exists and is valid
+        // Check session
         console.log('Checking session:', params.sessionId);
         const session = await getSessionById(params.sessionId);
         if (!session) {
@@ -46,27 +43,40 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
           return;
         }
 
-        // Try to get existing user for this session
+        // Try to get existing user
         console.log('Checking for existing user...');
-        const existingUser = await getUserBySessionId(params.sessionId);
+        let existingUser = await getUserBySessionId(params.sessionId);
         console.log('Existing user check result:', existingUser);
 
         let signInAttempt;
         let userData;
 
+        // Try to handle existing user first
         if (existingUser) {
-          console.log('Found existing user, attempting sign in...');
-          signInAttempt = await signIn.create({
-            identifier: `${existingUser.username}@temporary.edu`,
-            password: existingUser.temp_password, 
-          });
-          userData = existingUser;
+          try {
+            console.log('Found existing user, attempting sign in...');
+            signInAttempt = await signIn.create({
+              identifier: `${existingUser.username}@temporary.edu`,
+              password: existingUser.temp_password,
+            });
+            userData = existingUser;
+          } catch (signInError) {
+            console.log('Sign in failed with existing user, creating new one...');
+            // If sign in fails, delete the old user and create a new one
+            if (existingUser.clerk_id) {
+              await deleteUser(existingUser.clerk_id);
+            }
+            const { username, password, userData: newUserData } = await createTemporaryUser(params.sessionId);
+            signInAttempt = await signIn.create({
+              identifier: `${username}@temporary.edu`,
+              password: password,
+            });
+            userData = newUserData;
+          }
         } else {
-          // Create new temporary user
+          // Create new user if none exists
           console.log('No existing user found, creating new user...');
           const { username, password, userData: newUserData } = await createTemporaryUser(params.sessionId);
-          console.log('Temporary user created:', { username });
-
           signInAttempt = await signIn.create({
             identifier: `${username}@temporary.edu`,
             password: password,
@@ -74,52 +84,21 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
           userData = newUserData;
         }
 
-        console.log('Sign in attempt result:', signInAttempt);
-
-        if (signInAttempt.status === "complete" && signInAttempt.createdSessionId) {
+        if (signInAttempt?.status === "complete" && signInAttempt.createdSessionId) {
           console.log('Sign in completed successfully');
-          
-          // Set this session as active
-          console.log('Setting active session...');
           await setActive({ session: signInAttempt.createdSessionId });
           
-          // Store any necessary session data
+          // Store user data
           localStorage.setItem('tempUserId', userData.id);
           
-          // Define redirect URL
+          // Redirect with multiple fallbacks
           const redirectUrl = `/join/${params.sessionId}/group`;
-          console.log('Will redirect to:', redirectUrl);
-
-          // Perform redirect with multiple fallbacks
-          const performRedirect = () => {
-            console.log('Attempting redirect now...');
-            
-            // Try direct window location first
-            window.location.href = redirectUrl;
-            
-            // Fallback to router.push after a short delay if window.location didn't work
-            redirectTimeout = setTimeout(() => {
-              if (window.location.pathname !== redirectUrl) {
-                console.log('Trying router.push fallback...');
-                router.push(redirectUrl);
-                
-                // Final fallback - force reload to the correct URL
-                redirectTimeout = setTimeout(() => {
-                  if (window.location.pathname !== redirectUrl) {
-                    console.log('Force reloading to correct URL...');
-                    window.location.replace(redirectUrl);
-                  }
-                }, 1000);
-              }
-            }, 500);
-          };
-
-          // Wait for auth state to settle, then redirect
-          await new Promise(resolve => setTimeout(resolve, 1500));
-          performRedirect();
+          console.log('Redirecting to:', redirectUrl);
           
+          // Try immediate redirect
+          window.location.href = redirectUrl;
+
         } else {
-          console.error('Sign in not completed:', signInAttempt);
           throw new Error("Failed to complete sign in process");
         }
       } catch (error) {
@@ -131,30 +110,7 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
     };
 
     initializeUser();
-
-    // Cleanup function
-    return () => {
-      if (redirectTimeout) {
-        clearTimeout(redirectTimeout);
-      }
-    };
   }, [params.sessionId, signInHelper, router]);
-
-  // Force redirect check on mount
-  useEffect(() => {
-    const checkAndRedirect = () => {
-      const tempUserId = localStorage.getItem('tempUserId');
-      if (tempUserId) {
-        const redirectUrl = `/join/${params.sessionId}/group`;
-        if (window.location.pathname !== redirectUrl) {
-          console.log('Detected stored tempUserId, redirecting to:', redirectUrl);
-          window.location.href = redirectUrl;
-        }
-      }
-    };
-
-    checkAndRedirect();
-  }, [params.sessionId]);
 
   if (loading) {
     return (
@@ -174,10 +130,7 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
           <h1 className="text-2xl font-bold text-red-500 mb-4">Error</h1>
           <p className="text-gray-600">{error}</p>
           <button 
-            onClick={() => {
-              router.refresh();
-              window.location.reload();
-            }}
+            onClick={() => window.location.reload()}
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Try Again
