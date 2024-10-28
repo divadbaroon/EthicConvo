@@ -55,7 +55,7 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
           localStorage.setItem('tempUserId', userData.id);
           
           // Redirect to group selection
-          router.push(`/join/${params.sessionId}/group-selection`);
+          router.push(`/join/${params.sessionId}/group`);
         } else {
           throw new Error("Failed to complete sign in process");
         }
