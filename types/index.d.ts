@@ -321,3 +321,106 @@ export interface GraphDataItem {
 export type DraggedItemType = TopOpinion | OpposingOpinion | UniqueOpinion | GraphDataItem | null;
 
 export type PanelType = 'Top Opinions' | 'Opposing Opinions' | 'Unique Opinions' | 'Graphs';
+
+export interface ISession {
+  _id: string;
+  number: number;
+  title: string;
+  creator: string;
+  task: string;
+  scenario: string;
+  discussionPoints: string[];
+  timeLeft: number;
+  status: string;
+  totalPerspectiveParticipants: number;
+  preferredGroupSize: number;
+  participantCount: number;
+  groups: IGroup[];
+  creationDate: Date;
+  endDate?: Date;
+}
+
+export type CreateSessionParams = Omit<ISession, '_id' | 'creationDate'>;
+export type UpdateSessionParams = Partial<Omit<ISession, '_id' | 'creationDate'>>;
+
+// Group Types
+export interface IGroup {
+  _id: string;
+  number: number;
+  sessionId: string;
+  maxOccupancy: number;
+  currentOccupancy?: number;
+  users?: string[];
+}
+
+export type CreateGroupParams = Omit<IGroup, '_id' | 'creationDate'>;
+export type UpdateGroupParams = Partial<Omit<IGroup, '_id' | 'creationDate'>>;
+
+// User Types
+export interface IUser {
+  _id: Types.ObjectId;
+  sessions: Types.ObjectId[];
+  role: 'instructor' | 'student';
+  clerkId: string;
+  username: string;
+  participatedSessions: Types.ObjectId[];
+  isActive?: boolean;
+}
+
+export type CreateUserParams = Omit<IUser, '_id'>;
+export type UpdateUserParams = Partial<Omit<IUser, '_id'>>;
+
+// Message Types
+export interface IMessage {
+  _id?: Types.ObjectId;
+  sender?: Types.ObjectId;
+  groupId?: Types.ObjectId;
+  sessionId?: Types.ObjectId;
+  content: string;
+  timestamp: string;
+  username?: string;
+  groupNumber?: number;
+  transcript?: IMessage[];
+}
+
+export type CreateMessageParams = Omit<IMessage, '_id' | 'timestamp'>;
+
+// Topic Types
+
+export type UpdateTopicParams = Partial<Omit<ITopic, '_id' | 'creationDate'>>;
+
+// Analytics Types
+export interface IAnalytics {
+  _id: Types.ObjectId;
+  sessionId: Types.ObjectId;
+  groupId: Types.ObjectId;
+  participationRate: number;
+  topicsCovered: number;
+  averageSentiment: string;
+  keywordFrequency: Record<string, number>;
+  date: Date;
+}
+
+export type CreateAnalyticsParams = Omit<IAnalytics, '_id'>;
+export type UpdateAnalyticsParams = Partial<Omit<IAnalytics, '_id'>>;
+
+// ActivityLog Types
+export interface IActivityLog {
+  _id: Types.ObjectId;
+  userId: Types.ObjectId;
+  action: string;
+  details: Record<string, any>;
+  timestamp: Date;
+}
+
+export type CreateActivityLogParams = Omit<IActivityLog, '_id' | 'timestamp'>;
+
+// User Collection Types
+export interface IUserCollection {
+  profiles: string[];
+  llms: string[];
+  voices: string[];
+  extensions: string[];
+}
+
+export type UpdateUserCollection = Partial<IUserCollection>;
