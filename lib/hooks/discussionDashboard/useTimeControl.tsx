@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 export const useTimeControl = (duration: number) => {
   const [currentTime, setCurrentTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
