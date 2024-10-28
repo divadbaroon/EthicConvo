@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache"
 import { supabaseAdmin } from "@/lib/database/supabase/admin"
 import { handleError } from "@/lib/utils"
 
+import { clerkClient } from "@clerk/nextjs";
+
 // First, let's define our types
 type CreateUserParams = {
   username: string
@@ -178,3 +180,41 @@ export async function getActiveUsers() {
   }
 }
 
+export async function createTemporaryUser(sessionId: string) {
+  try {
+    // Generate random username and password
+    const randomUsername = `Student_${Math.random().toString(36).substring(2, 8)}`;
+    const temporaryPassword = Math.random().toString(36);
+
+    // Create user in Clerk using emailAddress strategy
+    const clerkUser = await clerkClient.users.createUser({
+      emailAddress: [`${randomUsername}@temporary.edu`],
+      password: temporaryPassword,
+      firstName: 'Anonymous',
+      username: randomUsername,
+    });
+
+    // Create user in Supabase
+    const { data: user, error } = await supabaseAdmin
+      .from('users')
+      .insert({
+        username: randomUsername,
+        clerk_id: clerkUser.id,
+        role: 'student',
+        session_id: sessionId
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return {
+      username: randomUsername,
+      password: temporaryPassword,
+      userData: user
+    };
+  } catch (error) {
+    console.error("Error creating temporary user:", error);
+    throw error;
+  }
+}
