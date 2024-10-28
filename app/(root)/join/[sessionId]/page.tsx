@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import { createTemporaryUser } from '@/lib/actions/user.actions';
+import { createTemporaryUser, getUserBySessionId } from '@/lib/actions/user.actions';
 import { getSessionById } from '@/lib/actions/session.actions';
 
 export default function JoinSession({ params }: { params: { sessionId: string }}) {
@@ -44,17 +44,34 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
           return;
         }
 
-        // Create temporary user
-        console.log('Creating temporary user...');
-        const { username, password, userData } = await createTemporaryUser(params.sessionId);
-        console.log('Temporary user created:', { username, userData });
+        // Try to get existing user for this session
+        console.log('Checking for existing user...');
+        const existingUser = await getUserBySessionId(params.sessionId);
+        console.log('Existing user check result:', existingUser);
 
-        // Sign in with email/password
-        console.log('Attempting sign in...');
-        const signInAttempt = await signIn.create({
-          identifier: `${username}@temporary.edu`,
-          password: password,
-        });
+        let signInAttempt;
+        let userData;
+
+        if (existingUser) {
+          console.log('Found existing user, attempting sign in...');
+          signInAttempt = await signIn.create({
+            identifier: `${existingUser.username}@temporary.edu`,
+            password: existingUser.temp_password, 
+          });
+          userData = existingUser;
+        } else {
+          // Create new temporary user
+          console.log('No existing user found, creating new user...');
+          const { username, password, userData: newUserData } = await createTemporaryUser(params.sessionId);
+          console.log('Temporary user created:', { username });
+
+          signInAttempt = await signIn.create({
+            identifier: `${username}@temporary.edu`,
+            password: password,
+          });
+          userData = newUserData;
+        }
+
         console.log('Sign in attempt result:', signInAttempt);
 
         if (signInAttempt.status === "complete" && signInAttempt.createdSessionId) {
