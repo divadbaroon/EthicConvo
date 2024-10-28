@@ -1,18 +1,17 @@
 export const discussionTasks: { [key: number]: DiscussionTask } = {
   1: {
-    title: "Gather diverse causes",
-    subtitle: "What are the primary causes of copyright infringement concerns with generative AI?"
+    title: "Analyze stakeholder impact",
+    subtitle: "What were the immediate and long-term implications of Strava's heat map data exposure for different stakeholders?"
   },
   2: {
-    title: "Analyze issue in-depth",
-    subtitle: "How do the technology's mechanisms and the use of copyrighted material contribute to this issue?"
+    title: "Examine technical factors",
+    subtitle: "How did Strava's data visualization and sharing practices contribute to the privacy breach?"
   },
   3: {
-    title: "Discuss solutions",
-    subtitle: "What strategies or legal frameworks could help address copyright challenges in the context of generative AI?"
+    title: "Develop comprehensive solutions",
+    subtitle: "What combination of technical solutions, policy changes, and user education would effectively prevent future exposures?"
   }
 };
-
 
 export interface DroppedItem {
   chartId: string;

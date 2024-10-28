@@ -435,72 +435,72 @@ const toggleDrawing = () => {
   const [groupAnswers] = useState<TopicData[]>([
     {
       "topic": "Answer 1",
-      "topicText": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+      "topicText": "People's workout routes were showing up on a global map without them knowing",
       "groups": [
-        { "groupId": "group 13", "timestamp": 10 },
-        { "groupId": "group 16", "timestamp": 25 }
+        { "groupId": "group 13", "timestamp": 15 },
+        { "groupId": "group 16", "timestamp": 30 }
       ],
       "counts": [
-        { "timestamp": 10, "count": 1 },
-        { "timestamp": 35, "count": 2 }
+        { "timestamp": 15, "count": 1 },
+        { "timestamp": 30, "count": 2 }
       ]
     },
     {
       "topic": "Answer 2",
-      "topicText": "Implementing robust tracking mechanisms for data sourcing",
+      "topicText": "The app should've warned users their data would be public and easy to find",
       "groups": [
-        { "groupId": "group 5", "timestamp": 15 },
-        { "groupId": "group 10", "timestamp": 30 },
-        { "groupId": "group 11", "timestamp": 45 },
-        { "groupId": "group 12", "timestamp": 60 },
-        { "groupId": "group 19", "timestamp": 75 }
-      ],
-      "counts": [
-        { "timestamp": 45, "count": 1 },
-        { "timestamp": 50, "count": 2 },
-        { "timestamp": 75, "count": 3 },
-        { "timestamp": 85, "count": 4 },
-        { "timestamp": 90, "count": 5 }
-      ]
-    },
-    {
-      "topic": "Answer 3",
-      "topicText": "Intellectual property might be improperly used in creating ML training datasets",
-      "groups": [
-        { "groupId": "group 21", "timestamp": 50 },
-        { "groupId": "group 22", "timestamp": 40 },
-        { "groupId": "group 24", "timestamp": 65 }
-      ],
-      "counts": [
-        { "timestamp": 20, "count": 1 },
-        { "timestamp": 40, "count": 2 },
-        { "timestamp": 65, "count": 3 }
-      ]
-    },
-    {
-      "topic": "Answer 4",
-      "topicText": "AI can be trained on protected work without permission",
-      "groups": [
-        { "groupId": "group 1", "timestamp": 35 }
-      ],
-      "counts": [
-        { "timestamp": 35, "count": 1 }
-      ]
-    },
-    {
-      "topic": "Answer 5",
-      "topicText": "Using copyrighted datasets for AI training is fair use",
-      "groups": [
-        { "groupId": "group 2", "timestamp": 45 },
-        { "groupId": "group 3", "timestamp": 60 },
-        { "groupId": "group 18", "timestamp": 75 },
-        { "groupId": "group 20", "timestamp": 90 }
+        { "groupId": "group 5", "timestamp": 45 },
+        { "groupId": "group 10", "timestamp": 60 },
+        { "groupId": "group 11", "timestamp": 75 },
+        { "groupId": "group 12", "timestamp": 90 },
+        { "groupId": "group 19", "timestamp": 105 }
       ],
       "counts": [
         { "timestamp": 45, "count": 1 },
         { "timestamp": 60, "count": 2 },
         { "timestamp": 75, "count": 3 },
-        { "timestamp": 90, "count": 4 }
+        { "timestamp": 90, "count": 4 },
+        { "timestamp": 105, "count": 5 }
+      ]
+    },
+    {
+      "topic": "Answer 3",
+      "topicText": "Military personnel didn't realize tracking their workouts could reveal base locations",
+      "groups": [
+        { "groupId": "group 21", "timestamp": 120 },
+        { "groupId": "group 22", "timestamp": 135 },
+        { "groupId": "group 24", "timestamp": 150 }
+      ],
+      "counts": [
+        { "timestamp": 120, "count": 1 },
+        { "timestamp": 135, "count": 2 },
+        { "timestamp": 150, "count": 3 }
+      ]
+    },
+    {
+      "topic": "Answer 4",
+      "topicText": "Default settings should be private - make people choose to share data",
+      "groups": [
+        { "groupId": "group 1", "timestamp": 165 }
+      ],
+      "counts": [
+        { "timestamp": 165, "count": 1 }
+      ]
+    },
+    {
+      "topic": "Answer 5",
+      "topicText": "App needs better privacy controls and clear warnings about location sharing",
+      "groups": [
+        { "groupId": "group 2", "timestamp": 180 },
+        { "groupId": "group 3", "timestamp": 195 },
+        { "groupId": "group 18", "timestamp": 210 },
+        { "groupId": "group 20", "timestamp": 225 }
+      ],
+      "counts": [
+        { "timestamp": 180, "count": 1 },
+        { "timestamp": 195, "count": 2 },
+        { "timestamp": 210, "count": 3 },
+        { "timestamp": 225, "count": 4 }
       ]
     }
   ]);

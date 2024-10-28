@@ -8,22 +8,64 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { useUser } from "@clerk/nextjs"
+import { useParams } from 'next/navigation'
 import { supabaseClient } from '@/lib/database/supabase/client'
 import { toast } from "sonner"
+import { analyzeMessages } from '@/lib/actions/metric.actions'
 
-import type { Message, ChatWindowProps } from '@/types';
+import type { Message, ChatWindowProps } from '@/types'
 
 function ChatWindow({ groupId }: ChatWindowProps) {
+  const { sessionId } = useParams();
   const { user } = useUser();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [lastAnalysisTime, setLastAnalysisTime] = useState<number>(Date.now());
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
+  // Metrics analysis effect
+  useEffect(() => {
+    if (!groupId || !sessionId || !user) return;
+  
+    const analyzeInterval = setInterval(async () => {
+      try {
+        // Get messages since last analysis
+        const recentMessages = messages.filter(
+          msg => new Date(msg.created_at).getTime() > lastAnalysisTime
+        );
+  
+        if (recentMessages.length > 0) {
+          console.log('Starting analysis for messages:', recentMessages);
+          console.log('Analysis timeframe:', new Date(lastAnalysisTime).toLocaleTimeString(), 'to', new Date().toLocaleTimeString());
+  
+          const analysisStart = performance.now();
+          const results = await analyzeMessages(recentMessages, sessionId as string, groupId);
+          const analysisEnd = performance.now();
+  
+          console.log('Analysis results:', results);
+          console.log(`Analysis took ${(analysisEnd - analysisStart).toFixed(2)}ms`);
+          
+          setLastAnalysisTime(Date.now());
+        } else {
+          console.log('No new messages to analyze since:', new Date(lastAnalysisTime).toLocaleTimeString());
+        }
+      } catch (error) {
+        console.error('Error analyzing messages:', {
+          error,
+          messages: messages.length,
+          lastAnalysis: new Date(lastAnalysisTime).toLocaleTimeString(),
+        });
+      }
+    }, 10000);
+  
+    return () => clearInterval(analyzeInterval);
+  }, [groupId, sessionId, messages, lastAnalysisTime, user]);
+
+  // Message fetching and subscription effect
   useEffect(() => {
     if (!groupId || !user) return;
 
-    // Fetch initial messages with authenticated client
     const fetchMessages = async () => {
       try {
         const { data, error } = await supabaseClient
@@ -108,8 +150,7 @@ function ChatWindow({ groupId }: ChatWindowProps) {
     );
   }
 
-   // Helper function to group messages by user and time
-   const shouldGroupMessage = (currentMsg: Message, prevMsg: Message | null) => {
+  const shouldGroupMessage = (currentMsg: Message, prevMsg: Message | null) => {
     if (!prevMsg) return false;
     return currentMsg.user_id === prevMsg.user_id && 
            new Date(currentMsg.created_at).getTime() - new Date(prevMsg.created_at).getTime() < 60000;

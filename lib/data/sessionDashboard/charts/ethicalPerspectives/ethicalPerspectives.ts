@@ -4,232 +4,279 @@ import { TimeSeriesData, TopicData } from '@/types';
 export const ethicalPerspectivesQ1: TopicData[] = [
   {
     topic: "Q1 Ethics 1",
-    topicText: "Utilitarian Perspective: Unauthorized data use harms collective creative incentives",
+    topicText: "Utilitarian View: Mass data collection helps users but risks everyone's privacy",
     groups: [
-      { groupId: "group 13", timestamp: 10 },
-      { groupId: "group 16", timestamp: 25 },
-      { groupId: "group 17", timestamp: 40 }
+      { groupId: "group 3", timestamp: 15 },
+      { groupId: "group 7", timestamp: 30 },
+      { groupId: "group 12", timestamp: 45 }
     ],
     counts: [
-      { timestamp: 10, count: 1 },
-      { timestamp: 25, count: 2 },
-      { timestamp: 40, count: 3 }
+      { timestamp: 15, count: 1 },
+      { timestamp: 30, count: 2 }, 
+      { timestamp: 45, count: 3 }
     ]
   },
   {
-    topic: "Q1 Ethics 2",
-    topicText: "Deontological View: Using copyrighted data without consent violates moral duty",
+    topic: "Q1 Ethics 2", 
+    topicText: "Deontological: Secretly exposing people's locations violates basic privacy rights",
     groups: [
-      { groupId: "group 5", timestamp: 55 },
-      { groupId: "group 10", timestamp: 70 },
-      { groupId: "group 14", timestamp: 85 }
+      { groupId: "group 1", timestamp: 60 },
+      { groupId: "group 5", timestamp: 75 },
+      { groupId: "group 15", timestamp: 90 }
     ],
     counts: [
-      { timestamp: 55, count: 1 },
-      { timestamp: 70, count: 2 },
-      { timestamp: 85, count: 3 }
+      { timestamp: 60, count: 1 },
+      { timestamp: 75, count: 2 },
+      { timestamp: 90, count: 3 }
     ]
   },
   {
     topic: "Q1 Ethics 3",
-    topicText: "Rights-based Approach: Creative works deserve protection as intellectual property",
+    topicText: "Rights-based: People have fundamental right to control their location data",
     groups: [
-      { groupId: "group 11", timestamp: 100 },
-      { groupId: "group 12", timestamp: 115 }
+      { groupId: "group 2", timestamp: 105 },
+      { groupId: "group 8", timestamp: 120 },
+      { groupId: "group 19", timestamp: 135 }
     ],
     counts: [
-      { timestamp: 100, count: 1 },
-      { timestamp: 115, count: 2 }
+      { timestamp: 105, count: 1 },
+      { timestamp: 120, count: 2 },
+      { timestamp: 135, count: 3 }
     ]
   },
   {
     topic: "Q1 Ethics 4",
-    topicText: "Virtue Ethics: Respecting creativity and originality in AI development",
+    topicText: "Virtue Ethics: Companies should prioritize user safety over cool features",
     groups: [
-      { groupId: "group 18", timestamp: 130 },
-      { groupId: "group 20", timestamp: 145 },
-      { groupId: "group 10", timestamp: 160 },
-      { groupId: "group 12", timestamp: 175 }
+      { groupId: "group 4", timestamp: 150 },
+      { groupId: "group 10", timestamp: 165 },
+      { groupId: "group 17", timestamp: 180 }
     ],
     counts: [
-      { timestamp: 130, count: 1 },
-      { timestamp: 145, count: 2 },
-      { timestamp: 160, count: 3 },
-      { timestamp: 175, count: 4 }
+      { timestamp: 150, count: 1 },
+      { timestamp: 165, count: 2 },
+      { timestamp: 180, count: 3 }
     ]
   },
   {
     topic: "Q1 Ethics 5",
-    topicText: "Social Justice: Impact on marginalized creators and artists",
+    topicText: "Social Justice: Privacy breaches affect vulnerable groups more severely",
     groups: [
-      { groupId: "group 22", timestamp: 190 },
-      { groupId: "group 23", timestamp: 205 }
+      { groupId: "group 6", timestamp: 195 },
+      { groupId: "group 11", timestamp: 210 },
+      { groupId: "group 16", timestamp: 225 }
     ],
     counts: [
-      { timestamp: 190, count: 1 },
-      { timestamp: 205, count: 2 }
+      { timestamp: 195, count: 1 },
+      { timestamp: 210, count: 2 },
+      { timestamp: 225, count: 3 }
+    ]
+  },
+  {
+    topic: "Q1 Ethics 6",
+    topicText: "Care Ethics: App ignored responsibility to protect user community",
+    groups: [
+      { groupId: "group 9", timestamp: 240 },
+      { groupId: "group 13", timestamp: 255 },
+      { groupId: "group 18", timestamp: 270 }
+    ],
+    counts: [
+      { timestamp: 240, count: 1 },
+      { timestamp: 255, count: 2 },
+      { timestamp: 270, count: 3 }
     ]
   }
-];
-
-// Question 2: Technical Analysis
-export const ethicalPerspectivesQ2: TopicData[] = [
+ ];
+ 
+ export const ethicalPerspectivesQ2: TopicData[] = [
   {
     topic: "Q2 Ethics 1",
-    topicText: "Utilitarian Analysis: Balancing innovation benefits against creator rights",
+    topicText: "Utilitarian Analysis: Benefits of social features vs privacy risks",
     groups: [
-      { groupId: "group 5", timestamp: 75 },
-      { groupId: "group 10", timestamp: 90 },
-      { groupId: "group 11", timestamp: 105 }
+      { groupId: "group 3", timestamp: 285 },
+      { groupId: "group 7", timestamp: 300 },
+      { groupId: "group 14", timestamp: 315 }
     ],
     counts: [
-      { timestamp: 75, count: 1 },
-      { timestamp: 90, count: 2 },
-      { timestamp: 105, count: 3 }
+      { timestamp: 285, count: 1 },
+      { timestamp: 300, count: 2 },
+      { timestamp: 315, count: 3 }
     ]
   },
   {
     topic: "Q2 Ethics 2",
-    topicText: "Transparency Principle: Ethical requirement for data provenance tracking",
+    topicText: "Transparency: Users weren't clearly told how their data would be shown",
     groups: [
-      { groupId: "group 12", timestamp: 120 },
-      { groupId: "group 19", timestamp: 135 }
+      { groupId: "group 1", timestamp: 330 },
+      { groupId: "group 5", timestamp: 345 },
+      { groupId: "group 15", timestamp: 360 }
     ],
     counts: [
-      { timestamp: 120, count: 1 },
-      { timestamp: 135, count: 2 }
+      { timestamp: 330, count: 1 },
+      { timestamp: 345, count: 2 },
+      { timestamp: 360, count: 3 }
     ]
   },
   {
     topic: "Q2 Ethics 3",
-    topicText: "Justice Framework: Fair distribution of AI technology benefits",
+    topicText: "Justice Framework: Military personnel faced unfair security risks",
     groups: [
-      { groupId: "group 13", timestamp: 140 },
-      { groupId: "group 16", timestamp: 155 }
+      { groupId: "group 2", timestamp: 375 },
+      { groupId: "group 8", timestamp: 390 },
+      { groupId: "group 19", timestamp: 405 }
     ],
     counts: [
-      { timestamp: 140, count: 1 },
-      { timestamp: 155, count: 2 }
+      { timestamp: 375, count: 1 },
+      { timestamp: 390, count: 2 },
+      { timestamp: 405, count: 3 }
     ]
   },
   {
     topic: "Q2 Ethics 4",
-    topicText: "Care Ethics: Protecting creative communities and relationships",
+    topicText: "Care Ethics: App ignored potential harm to user relationships and safety",
     groups: [
-      { groupId: "group 24", timestamp: 170 },
-      { groupId: "group 25", timestamp: 185 },
-      { groupId: "group 10", timestamp: 200 },
-      { groupId: "group 13", timestamp: 215 }
+      { groupId: "group 4", timestamp: 420 },
+      { groupId: "group 10", timestamp: 435 },
+      { groupId: "group 17", timestamp: 450 }
     ],
     counts: [
-      { timestamp: 170, count: 1 },
-      { timestamp: 185, count: 2 },
-      { timestamp: 200, count: 3 },
-      { timestamp: 215, count: 4 }
+      { timestamp: 420, count: 1 },
+      { timestamp: 435, count: 2 },
+      { timestamp: 450, count: 3 }
     ]
   },
   {
     topic: "Q2 Ethics 5",
-    topicText: "Virtue-based: Promoting responsible innovation practices",
+    topicText: "Virtue-based: Company valued viral marketing over user protection",
     groups: [
-      { groupId: "group 26", timestamp: 230 },
-      { groupId: "group 27", timestamp: 245 }
+      { groupId: "group 6", timestamp: 465 },
+      { groupId: "group 11", timestamp: 480 },
+      { groupId: "group 16", timestamp: 495 }
     ],
     counts: [
-      { timestamp: 230, count: 1 },
-      { timestamp: 245, count: 2 }
+      { timestamp: 465, count: 1 },
+      { timestamp: 480, count: 2 },
+      { timestamp: 495, count: 3 }
+    ]
+  },
+  {
+    topic: "Q2 Ethics 6",
+    topicText: "Social Contract: Users trusted app with sensitive data and were betrayed",
+    groups: [
+      { groupId: "group 9", timestamp: 510 },
+      { groupId: "group 13", timestamp: 525 },
+      { groupId: "group 18", timestamp: 540 }
+    ],
+    counts: [
+      { timestamp: 510, count: 1 },
+      { timestamp: 525, count: 2 },
+      { timestamp: 540, count: 3 }
     ]
   }
-];
-
-// Question 3: Solution Development
-export const ethicalPerspectivesQ3: TopicData[] = [
+ ];
+ 
+ export const ethicalPerspectivesQ3: TopicData[] = [
   {
     topic: "Q3 Ethics 1",
-    topicText: "Rights-based Framework: Implementing consent mechanisms for data use",
+    topicText: "Rights-based: Implement proper consent and opt-in for data sharing",
     groups: [
-      { groupId: "group 5", timestamp: 260 },
-      { groupId: "group 10", timestamp: 275 },
-      { groupId: "group 11", timestamp: 290 },
-      { groupId: "group 12", timestamp: 305 }
+      { groupId: "group 3", timestamp: 555 },
+      { groupId: "group 7", timestamp: 560 },
+      { groupId: "group 14", timestamp: 565 }
     ],
     counts: [
-      { timestamp: 260, count: 1 },
-      { timestamp: 275, count: 2 },
-      { timestamp: 290, count: 3 },
-      { timestamp: 305, count: 4 }
+      { timestamp: 555, count: 1 },
+      { timestamp: 560, count: 2 },
+      { timestamp: 565, count: 3 }
     ]
   },
   {
     topic: "Q3 Ethics 2",
-    topicText: "Distributive Justice: Fair compensation models for content creators",
+    topicText: "Justice: Create fair policies that protect all users equally",
     groups: [
-      { groupId: "group 13", timestamp: 320 },
-      { groupId: "group 16", timestamp: 335 },
-      { groupId: "group 19", timestamp: 350 }
+      { groupId: "group 1", timestamp: 570 },
+      { groupId: "group 5", timestamp: 575 },
+      { groupId: "group 15", timestamp: 580 }
     ],
     counts: [
-      { timestamp: 320, count: 1 },
-      { timestamp: 335, count: 2 },
-      { timestamp: 350, count: 3 }
+      { timestamp: 570, count: 1 },
+      { timestamp: 575, count: 2 },
+      { timestamp: 580, count: 3 }
     ]
   },
   {
     topic: "Q3 Ethics 3",
-    topicText: "Virtue Ethics: Guidelines for ethical AI development practices",
+    topicText: "Virtue Ethics: Develop clearer privacy-first company values",
     groups: [
-      { groupId: "group 5", timestamp: 365 },
-      { groupId: "group 10", timestamp: 380 },
-      { groupId: "group 12", timestamp: 395 }
+      { groupId: "group 2", timestamp: 582 },
+      { groupId: "group 8", timestamp: 584 },
+      { groupId: "group 19", timestamp: 586 }
     ],
     counts: [
-      { timestamp: 365, count: 1 },
-      { timestamp: 380, count: 2 },
-      { timestamp: 395, count: 3 }
+      { timestamp: 582, count: 1 },
+      { timestamp: 584, count: 2 },
+      { timestamp: 586, count: 3 }
     ]
   },
   {
     topic: "Q3 Ethics 4",
-    topicText: "Utilitarian Approach: Maximizing benefits while minimizing harm",
+    topicText: "Utilitarian: Balance social features with better privacy controls",
     groups: [
-      { groupId: "group 28", timestamp: 410 },
-      { groupId: "group 29", timestamp: 425 }
+      { groupId: "group 4", timestamp: 588 },
+      { groupId: "group 10", timestamp: 590 },
+      { groupId: "group 17", timestamp: 592 }
     ],
     counts: [
-      { timestamp: 410, count: 1 },
-      { timestamp: 425, count: 2 }
+      { timestamp: 588, count: 1 },
+      { timestamp: 590, count: 2 },
+      { timestamp: 592, count: 3 }
     ]
   },
   {
     topic: "Q3 Ethics 5",
-    topicText: "Social Contract Theory: Establishing new norms for AI data usage",
+    topicText: "Care Ethics: Put user safety before engagement metrics",
     groups: [
-      { groupId: "group 30", timestamp: 440 },
-      { groupId: "group 31", timestamp: 455 }
+      { groupId: "group 6", timestamp: 594 },
+      { groupId: "group 11", timestamp: 596 },
+      { groupId: "group 16", timestamp: 598 }
     ],
     counts: [
-      { timestamp: 440, count: 1 },
-      { timestamp: 455, count: 2 }
+      { timestamp: 594, count: 1 },
+      { timestamp: 596, count: 2 },
+      { timestamp: 598, count: 3 }
+    ]
+  },
+  {
+    topic: "Q3 Ethics 6",
+    topicText: "Social Contract: Rebuild trust through transparent data practices",
+    groups: [
+      { groupId: "group 9", timestamp: 598 },
+      { groupId: "group 13", timestamp: 599 },
+      { groupId: "group 18", timestamp: 600 }
+    ],
+    counts: [
+      { timestamp: 598, count: 1 },
+      { timestamp: 599, count: 2 },
+      { timestamp: 600, count: 3 }
     ]
   }
-];
-
-// Combined export for all ethical perspectives
-export const ethicalPerspectivesData = {
+ ];
+ 
+ export const ethicalPerspectivesData = {
   1: ethicalPerspectivesQ1,
   2: ethicalPerspectivesQ2,
   3: ethicalPerspectivesQ3
-};
-
-export const ETHICAL_PERSPECTIVES_CONFIG = {
+ };
+ 
+ export const ETHICAL_PERSPECTIVES_CONFIG = {
   id: 'ethicalPerspectives',
   title: 'Ethical Perspectives',
   dataKey: 'ethicalPerspectives',
   type: 'percentage' as const,
   visible: false,
   description: {
-    1: 'Ethical frameworks for understanding copyright issues',
-    2: 'Ethical analysis of technical implications',
-    3: 'Ethical approaches to solution development'
+    1: 'Ethical frameworks for understanding privacy implications',
+    2: 'Ethical analysis of technical decisions',
+    3: 'Ethical approaches to privacy solutions'
   }
-};
+ };

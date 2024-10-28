@@ -1,10 +1,10 @@
 import { TimeSeriesData, TopicData } from '@/types';
 
-// Question 1: Problem Understanding
+// Question 1: Privacy Breach Understanding
 export const keywordTrendsQ1: TopicData[] = [
   {
     topic: "Q1 Keyword 1",
-    topicText: "Copyright Infringement",
+    topicText: "Location Privacy",
     groups: [
       { groupId: "group 1", timestamp: 10 },
       { groupId: "group 4", timestamp: 25 },
@@ -18,7 +18,7 @@ export const keywordTrendsQ1: TopicData[] = [
   },
   {
     topic: "Q1 Keyword 2",
-    topicText: "Content Rights",
+    topicText: "Military Security",
     groups: [
       { groupId: "group 13", timestamp: 55 },
       { groupId: "group 16", timestamp: 70 },
@@ -32,7 +32,7 @@ export const keywordTrendsQ1: TopicData[] = [
   },
   {
     topic: "Q1 Keyword 3",
-    topicText: "Unauthorized Use",
+    topicText: "Data Exposure",
     groups: [
       { groupId: "group 5", timestamp: 100 },
       { groupId: "group 11", timestamp: 115 }
@@ -44,7 +44,7 @@ export const keywordTrendsQ1: TopicData[] = [
   },
   {
     topic: "Q1 Keyword 4",
-    topicText: "Creative Ownership",
+    topicText: "Sensitive Locations",
     groups: [
       { groupId: "group 25", timestamp: 130 },
       { groupId: "group 26", timestamp: 145 },
@@ -58,7 +58,7 @@ export const keywordTrendsQ1: TopicData[] = [
   },
   {
     topic: "Q1 Keyword 5",
-    topicText: "Intellectual Property",
+    topicText: "User Tracking",
     groups: [
       { groupId: "group 28", timestamp: 175 },
       { groupId: "group 29", timestamp: 190 },
@@ -72,11 +72,11 @@ export const keywordTrendsQ1: TopicData[] = [
   }
 ];
 
-// Question 2: Technical Analysis
+// Question 2: Data Visualization Analysis
 export const keywordTrendsQ2: TopicData[] = [
   {
     topic: "Q2 Keyword 1",
-    topicText: "Training Data",
+    topicText: "Heat Maps",
     groups: [
       { groupId: "group 3", timestamp: 220 },
       { groupId: "group 7", timestamp: 235 },
@@ -92,7 +92,7 @@ export const keywordTrendsQ2: TopicData[] = [
   },
   {
     topic: "Q2 Keyword 2",
-    topicText: "Data Scraping",
+    topicText: "Data Aggregation",
     groups: [
       { groupId: "group 2", timestamp: 280 },
       { groupId: "group 6", timestamp: 295 },
@@ -106,7 +106,7 @@ export const keywordTrendsQ2: TopicData[] = [
   },
   {
     topic: "Q2 Keyword 3",
-    topicText: "Model Architecture",
+    topicText: "Visualization Tools",
     groups: [
       { groupId: "group 12", timestamp: 325 }
     ],
@@ -116,7 +116,7 @@ export const keywordTrendsQ2: TopicData[] = [
   },
   {
     topic: "Q2 Keyword 4",
-    topicText: "Data Attribution",
+    topicText: "GPS Tracking",
     groups: [
       { groupId: "group 31", timestamp: 340 },
       { groupId: "group 32", timestamp: 355 },
@@ -130,7 +130,7 @@ export const keywordTrendsQ2: TopicData[] = [
   },
   {
     topic: "Q2 Keyword 5",
-    topicText: "Content Filtering",
+    topicText: "Activity Patterns",
     groups: [
       { groupId: "group 34", timestamp: 385 },
       { groupId: "group 35", timestamp: 400 },
@@ -144,11 +144,11 @@ export const keywordTrendsQ2: TopicData[] = [
   }
 ];
 
-// Question 3: Solution Development
+// Question 3: Privacy Solutions
 export const keywordTrendsQ3: TopicData[] = [
   {
     topic: "Q3 Keyword 1",
-    topicText: "Fair Use",
+    topicText: "Privacy Settings",
     groups: [
       { groupId: "group 2", timestamp: 430 },
       { groupId: "group 6", timestamp: 445 },
@@ -162,7 +162,7 @@ export const keywordTrendsQ3: TopicData[] = [
   },
   {
     topic: "Q3 Keyword 2",
-    topicText: "Compensation",
+    topicText: "Data Anonymization",
     groups: [
       { groupId: "group 11", timestamp: 475 },
       { groupId: "group 14", timestamp: 490 }
@@ -174,7 +174,7 @@ export const keywordTrendsQ3: TopicData[] = [
   },
   {
     topic: "Q3 Keyword 3",
-    topicText: "Licensing",
+    topicText: "Access Control",
     groups: [
       { groupId: "group 13", timestamp: 505 },
       { groupId: "group 16", timestamp: 520 },
@@ -188,7 +188,7 @@ export const keywordTrendsQ3: TopicData[] = [
   },
   {
     topic: "Q3 Keyword 4",
-    topicText: "Legal Framework",
+    topicText: "Security Protocols",
     groups: [
       { groupId: "group 19", timestamp: 550 },
       { groupId: "group 22", timestamp: 565 }
@@ -200,7 +200,7 @@ export const keywordTrendsQ3: TopicData[] = [
   },
   {
     topic: "Q3 Keyword 5",
-    topicText: "Compliance Standards",
+    topicText: "User Education",
     groups: [
       { groupId: "group 37", timestamp: 580 },
       { groupId: "group 38", timestamp: 595 },
@@ -223,13 +223,13 @@ export const keywordTrendsData = {
 
 export const KEYWORD_TRENDS_CONFIG = {
   id: 'keywordTrends',
-  title: 'Keyword Trends',
+  title: 'Strava Privacy Incident Keyword Trends',
   dataKey: 'keywordTrends',
   type: 'percentage' as const,
   visible: false,
   description: {
-    1: 'Key terms in copyright problem discussion',
-    2: 'Technical terminology trends',
-    3: 'Solution-related terminology'
+    1: 'Key terms in Strava privacy breach discussion',
+    2: 'Data visualization and collection terminology',
+    3: 'Privacy solution implementation terms'
   }
 };

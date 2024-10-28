@@ -45,6 +45,7 @@ export const TimeControls: React.FC<TimeControlsProps> = ({
             step={1}
             onValueChange={(value) => onTimeChange(value[0])}
             className="flex-grow"
+            disabled
           />
           <span className="text-sm tabular-nums">{formatTime(duration)}</span>
         </div>
