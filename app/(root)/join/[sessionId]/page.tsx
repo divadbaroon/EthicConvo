@@ -13,6 +13,8 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
   const router = useRouter();
 
   useEffect(() => {
+    let redirectTimeout: NodeJS.Timeout;
+    
     const initializeUser = async () => {
       try {
         console.log('Starting user initialization...');
@@ -84,29 +86,37 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
           // Store any necessary session data
           localStorage.setItem('tempUserId', userData.id);
           
-          // Add a small delay to ensure auth state is updated
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          // Attempt redirect
-          console.log('Attempting redirect...');
+          // Define redirect URL
           const redirectUrl = `/join/${params.sessionId}/group`;
-          
-          try {
-            // Try Next.js router first
-            router.push(redirectUrl);
+          console.log('Will redirect to:', redirectUrl);
+
+          // Perform redirect with multiple fallbacks
+          const performRedirect = () => {
+            console.log('Attempting redirect now...');
             
-            // Fallback to window.location after a delay if router.push doesn't work
-            setTimeout(() => {
-              if (window.location.pathname !== redirectUrl) {
-                console.log('Fallback to window.location redirect');
-                window.location.href = redirectUrl;
-              }
-            }, 1500);
-          } catch (redirectError) {
-            console.error('Redirect error:', redirectError);
-            // Force navigation if router fails
+            // Try direct window location first
             window.location.href = redirectUrl;
-          }
+            
+            // Fallback to router.push after a short delay if window.location didn't work
+            redirectTimeout = setTimeout(() => {
+              if (window.location.pathname !== redirectUrl) {
+                console.log('Trying router.push fallback...');
+                router.push(redirectUrl);
+                
+                // Final fallback - force reload to the correct URL
+                redirectTimeout = setTimeout(() => {
+                  if (window.location.pathname !== redirectUrl) {
+                    console.log('Force reloading to correct URL...');
+                    window.location.replace(redirectUrl);
+                  }
+                }, 1000);
+              }
+            }, 500);
+          };
+
+          // Wait for auth state to settle, then redirect
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          performRedirect();
           
         } else {
           console.error('Sign in not completed:', signInAttempt);
@@ -121,7 +131,30 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
     };
 
     initializeUser();
+
+    // Cleanup function
+    return () => {
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout);
+      }
+    };
   }, [params.sessionId, signInHelper, router]);
+
+  // Force redirect check on mount
+  useEffect(() => {
+    const checkAndRedirect = () => {
+      const tempUserId = localStorage.getItem('tempUserId');
+      if (tempUserId) {
+        const redirectUrl = `/join/${params.sessionId}/group`;
+        if (window.location.pathname !== redirectUrl) {
+          console.log('Detected stored tempUserId, redirecting to:', redirectUrl);
+          window.location.href = redirectUrl;
+        }
+      }
+    };
+
+    checkAndRedirect();
+  }, [params.sessionId]);
 
   if (loading) {
     return (
@@ -141,7 +174,10 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
           <h1 className="text-2xl font-bold text-red-500 mb-4">Error</h1>
           <p className="text-gray-600">{error}</p>
           <button 
-            onClick={() => router.refresh()}
+            onClick={() => {
+              router.refresh();
+              window.location.reload();
+            }}
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Try Again
