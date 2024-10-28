@@ -10,14 +10,10 @@ import { toast } from "sonner"
 import { getSessionById } from "@/lib/actions/session.actions"
 import { joinGroup } from "@/lib/actions/group.actions"
 import { useUser } from "@clerk/nextjs"
-import { Session, Group } from "@/types"
+import { Session } from "@/types"
 import { supabaseClient } from '@/lib/database/supabase/client';
 
-export default function GroupSelection({ 
-  params 
-}: { 
-  params: { sessionId: string } // Removed groupId as it shouldn't be in params yet
-}) {
+export default function GroupSelection({ params }: { params: { sessionId: string } }) {
   const { user, isLoaded } = useUser();
   const router = useRouter();
   const [sessionData, setSessionData] = useState<Session | null>(null);
@@ -27,6 +23,7 @@ export default function GroupSelection({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Combined useEffect for session data and user check
   useEffect(() => {
     if (!params.sessionId) return;
 
@@ -48,7 +45,7 @@ export default function GroupSelection({
       }
     };
 
-    // Set up real-time subscription for group updates
+    // Set up real-time subscription
     const channel = supabaseClient
       .channel(`session-${params.sessionId}-groups`)
       .on('postgres_changes', 
@@ -60,17 +57,26 @@ export default function GroupSelection({
         }, 
         (payload) => {
           console.log('Group update received:', payload);
-          fetchSessionData(); // Refresh data when groups change
+          fetchSessionData();
         }
       )
       .subscribe();
 
-    fetchSessionData();
+    // Check user auth status when loaded
+    if (isLoaded) {
+      if (!user) {
+        console.log('No authenticated user found');
+        toast.error("Please sign in to join a group");
+      } else {
+        console.log('Authenticated user:', user.id);
+        fetchSessionData();
+      }
+    }
 
     return () => {
       channel.unsubscribe();
     };
-  }, [params.sessionId]);
+  }, [params.sessionId, isLoaded, user]);
 
   const handleGroupSelect = (groupId: string) => {
     console.log('Selected group:', groupId);
@@ -78,56 +84,37 @@ export default function GroupSelection({
   };
 
   const handleJoinGroup = async () => {
-    if (!isLoaded) {
-      console.log('Clerk not loaded yet');
-      return;
-    }
-
-    if (!user) {
-      console.log('No user found:', user);
+    if (!isLoaded || !user) {
       toast.error("You must be logged in to join a group");
       return;
     }
-
+  
     if (!selectedGroup || !sessionData) {
       toast.error("Please select a group");
       return;
     }
-
+  
     setIsJoining(true);
     try {
-      console.log('Joining group...', {
-        groupId: selectedGroup,
-        userId: user.id
-      });
-
       const updatedGroup = await joinGroup(selectedGroup, user.id);
-      console.log('Join group response:', updatedGroup);
-
+      
       if (updatedGroup) {
         toast.success("Successfully joined the group");
-        // Update the URL to include the group ID
         router.push(`/join/${params.sessionId}/${selectedGroup}/waiting-room`);
-      } else {
-        throw new Error("Failed to join group");
       }
     } catch (error) {
-      console.error("Error joining group:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to join group. Please try again.");
+      if (error instanceof Error && error.message === "Group is full") {
+        toast.error("This group is full. Refreshing page...");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+        return;
+      }
+      toast.error("Failed to join group. Please try again.");
     } finally {
       setIsJoining(false);
     }
   };
-
-  // Add user authentication check
-  useEffect(() => {
-    if (isLoaded && !user) {
-      console.log('No authenticated user found');
-      toast.error("Please sign in to join a group");
-    } else if (isLoaded && user) {
-      console.log('Authenticated user:', user.id);
-    }
-  }, [isLoaded, user]);
 
   const filteredGroups = sessionData?.groups?.filter(group =>
     group.number.toString().includes(searchTerm.trim()) &&
