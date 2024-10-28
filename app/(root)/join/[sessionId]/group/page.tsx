@@ -16,7 +16,7 @@ import { supabaseClient } from '@/lib/database/supabase/client';
 export default function GroupSelection({ 
   params 
 }: { 
-  params: { sessionId: string, groupId: string } 
+  params: { sessionId: string } // Removed groupId as it shouldn't be in params yet
 }) {
   const { user, isLoaded } = useUser();
   const router = useRouter();
@@ -32,11 +32,13 @@ export default function GroupSelection({
 
     const fetchSessionData = async () => {
       try {
+        console.log('Fetching session data for:', params.sessionId);
         const response = await getSessionById(params.sessionId);
         if (!response) {
           setError("Session not found");
           return;
         }
+        console.log('Session data received:', response);
         setSessionData(response);
       } catch (error) {
         console.error("Error fetching session:", error);
@@ -56,7 +58,8 @@ export default function GroupSelection({
           table: 'groups',
           filter: `session_id=eq.${params.sessionId}`
         }, 
-        () => {
+        (payload) => {
+          console.log('Group update received:', payload);
           fetchSessionData(); // Refresh data when groups change
         }
       )
@@ -70,11 +73,18 @@ export default function GroupSelection({
   }, [params.sessionId]);
 
   const handleGroupSelect = (groupId: string) => {
+    console.log('Selected group:', groupId);
     setSelectedGroup(groupId);
   };
 
   const handleJoinGroup = async () => {
-    if (!isLoaded || !user) {
+    if (!isLoaded) {
+      console.log('Clerk not loaded yet');
+      return;
+    }
+
+    if (!user) {
+      console.log('No user found:', user);
       toast.error("You must be logged in to join a group");
       return;
     }
@@ -86,31 +96,56 @@ export default function GroupSelection({
 
     setIsJoining(true);
     try {
+      console.log('Joining group...', {
+        groupId: selectedGroup,
+        userId: user.id
+      });
+
       const updatedGroup = await joinGroup(selectedGroup, user.id);
+      console.log('Join group response:', updatedGroup);
+
       if (updatedGroup) {
         toast.success("Successfully joined the group");
-        router.push(`/join/${params.sessionId}/${params.groupId}/waiting-room`);
+        // Update the URL to include the group ID
+        router.push(`/join/${params.sessionId}/${selectedGroup}/waiting-room`);
       } else {
         throw new Error("Failed to join group");
       }
     } catch (error) {
       console.error("Error joining group:", error);
-      toast.error("Failed to join group. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Failed to join group. Please try again.");
     } finally {
       setIsJoining(false);
     }
   };
+
+  // Add user authentication check
+  useEffect(() => {
+    if (isLoaded && !user) {
+      console.log('No authenticated user found');
+      toast.error("Please sign in to join a group");
+    } else if (isLoaded && user) {
+      console.log('Authenticated user:', user.id);
+    }
+  }, [isLoaded, user]);
 
   const filteredGroups = sessionData?.groups?.filter(group =>
     group.number.toString().includes(searchTerm.trim()) &&
     group.current_occupancy < group.max_occupancy
   ) || [];
 
+  console.log('Filtered groups:', filteredGroups);
+
   if (loading) {
     return (
       <div className="container mx-auto p-4 max-w-4xl">
         <div className="animate-pulse">
-          {/* Add skeleton UI here */}
+          <div className="h-8 bg-gray-200 rounded w-3/4 mx-auto mb-6"></div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {[...Array(10)].map((_, i) => (
+              <div key={i} className="h-24 bg-gray-200 rounded"></div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -129,6 +164,11 @@ export default function GroupSelection({
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <h1 className="text-3xl font-bold mb-6 text-center mt-7">Select Your Group</h1>
+      {isLoaded && !user && (
+        <div className="mb-4 p-4 bg-yellow-100 text-yellow-800 rounded">
+          Please sign in to join a group
+        </div>
+      )}
       <div className="mb-6">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -177,10 +217,10 @@ export default function GroupSelection({
       )}
       <Button 
         onClick={handleJoinGroup} 
-        disabled={selectedGroup === null || isJoining}
+        disabled={!user || selectedGroup === null || isJoining}
         className="w-full py-2 text-lg font-semibold transition-colors duration-200"
       >
-        {isJoining ? 'Joining...' : selectedGroup ? 'Join Selected Group' : 'Select a Group'}
+        {!user ? 'Please Sign In to Join' : isJoining ? 'Joining...' : selectedGroup ? 'Join Selected Group' : 'Select a Group'}
       </Button>
     </div>
   );
