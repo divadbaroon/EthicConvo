@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth, useSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import { createTemporaryUser } from '@/lib/actions/user.actions';
+import { createTemporaryUser, getUserBySessionId } from '@/lib/actions/user.actions';
 import { getSessionById } from '@/lib/actions/session.actions';
 
 export default function JoinSession({ params }: { params: { sessionId: string }}) {
@@ -39,10 +39,25 @@ export default function JoinSession({ params }: { params: { sessionId: string }}
           return;
         }
 
-        // Create new temporary user
-        console.log('Creating temporary user...');
-        const { username, password, userData } = await createTemporaryUser(params.sessionId);
-        console.log('Temporary user created:', { username });
+        // Check for existing user in this session
+        console.log('Checking for existing user in session...');
+        const existingUser = await getUserBySessionId(params.sessionId);
+        
+        let username, password, userData;
+
+        if (existingUser) {
+          console.log('Found existing user, using existing credentials');
+          username = existingUser.username;
+          password = existingUser.temp_password;
+          userData = existingUser;
+        } else {
+          // Only create new user if one doesn't exist
+          console.log('No existing user found, creating new user...');
+          const newUser = await createTemporaryUser(params.sessionId);
+          username = newUser.username;
+          password = newUser.password;
+          userData = newUser.userData;
+        }
 
         // Store temp user ID
         localStorage.setItem('tempUserId', userData.id);
