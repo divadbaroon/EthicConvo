@@ -129,3 +129,17 @@ export type CreateGroupParams = {
   max_occupancy: number;
   name?: string;
 }
+
+export interface TopicData {
+  topic: string;
+  topicText: string;
+  groups: GroupData[];
+  counts: CountData[];
+}
+
+export interface TimeSeriesData {
+  "timestamp":number;
+  value: number;
+  answers?: Answer[];  
+  elapsedMinutes?: number;
+}

@@ -1,0 +1,426 @@
+[
+    {
+        "id": "top-1",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 1,
+        "slideId": "slide2",
+        "timestamp": 50
+    },
+    {
+        "id": "top-2",
+        "opposingId": "opposing-4",
+        "content": "The owner of the AI's work is a significant concern in AI and copyright issues",
+        "group": 1,
+        "slideId": "slide3",
+        "timestamp": 98
+    },
+    {
+        "id": "top-3",
+        "opposingId": "opposing-4",
+        "content": "Unclear ownership of AI-generated content is a problem",
+        "group": 1,
+        "slideId": "slide3",
+        "timestamp": 172
+    },
+    {
+        "id": "top-4",
+        "opposingId": "opposing-6",
+        "content": "Monetization of content created by generative models can lead to concerns",
+        "group": 1,
+        "slideId": "slide1",
+        "timestamp": 50
+    },
+    {
+        "id": "top-5",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 2,
+        "slideId": "slide2",
+        "timestamp": 258
+    },
+    {
+        "id": "top-6",
+        "opposingId": "opposing-4",
+        "content": "Unclear ownership of AI-generated content is a problem",
+        "group": 2,
+        "slideId": "slide3",
+        "timestamp": 320
+    },
+    {
+        "id": "top-7",
+        "opposingId": "opposing-3",
+        "content": "AI may infringe on copyrights by copying others' work without proper citation",
+        "group": 2,
+        "slideId": "slide1",
+        "timestamp": 364
+    },
+    {
+        "id": "top-8",
+        "opposingId": "opposing-15",
+        "content": "Everyday users having access to create derivative works based on this model is problematic",
+        "group": 2,
+        "slideId": "slide1",
+        "timestamp": 553
+    },
+    {
+        "id": "top-9",
+        "opposingId": "opposing-11",
+        "content": "Implementing robust tracking mechanisms for data sourcing",
+        "group": 2,
+        "slideId": "slide2",
+        "timestamp": 364
+    },
+    {
+        "id": "top-10",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 3,
+        "slideId": "slide2",
+        "timestamp": 5
+    },
+    {
+        "id": "top-11",
+        "opposingId": "opposing-4",
+        "content": "Unclear ownership of AI-generated content is a problem",
+        "group": 3,
+        "slideId": "slide3",
+        "timestamp": 5
+    },
+    {
+        "id": "top-12",
+        "opposingId": "opposing-4",
+        "content": "The owner of the AI's work is a significant concern in AI and copyright issues",
+        "group": 3,
+        "slideId": "slide3",
+        "timestamp": 103
+    },
+    {
+        "id": "top-13",
+        "opposingId": "opposing-3",
+        "content": "AI may infringe on copyrights by copying others' work without proper citation",
+        "group": 3,
+        "slideId": "slide1",
+        "timestamp": 125
+    },
+    {
+        "id": "top-14",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 4,
+        "slideId": "slide2",
+        "timestamp": 5
+    },
+    {
+        "id": "top-15",
+        "opposingId": "opposing-3",
+        "content": "AI may infringe on copyrights by copying others' work without proper citation",
+        "group": 4,
+        "slideId": "slide1",
+        "timestamp": 5
+    },
+    {
+        "id": "top-16",
+        "opposingId": "opposing-11",
+        "content": "Intellectual property might be improperly used in creating ML training datasets",
+        "group": 4,
+        "slideId": "slide2",
+        "timestamp": 5
+    },
+    {
+        "id": "top-17",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 6,
+        "slideId": "slide2",
+        "timestamp": 12
+    },
+    {
+        "id": "top-18",
+        "opposingId": "opposing-4",
+        "content": "Unclear ownership of AI-generated content is a problem",
+        "group": 6,
+        "slideId": "slide3",
+        "timestamp": 80
+    },
+    {
+        "id": "top-19",
+        "opposingId": "opposing-4",
+        "content": "The owner of the AI's work is a significant concern in AI and copyright issues",
+        "group": 6,
+        "slideId": "slide3",
+        "timestamp": 57
+    },
+    {
+        "id": "top-20",
+        "opposingId": "opposing-8",
+        "content": "AI can be trained on protected work without permission",
+        "group": 6,
+        "slideId": "slide2",
+        "timestamp": 80
+    },
+    {
+        "id": "top-21",
+        "opposingId": "opposing-3",
+        "content": "Existing IP should not be used as training data for generative AI",
+        "group": 6,
+        "slideId": "slide2",
+        "timestamp": 207
+    },
+    {
+        "id": "top-22",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 7,
+        "slideId": "slide2",
+        "timestamp": 23
+    },
+    {
+        "id": "top-23",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 9,
+        "slideId": "slide2",
+        "timestamp": 23
+    },
+    {
+        "id": "top-24",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 10,
+        "slideId": "slide2",
+        "timestamp": 60
+    },
+    {
+        "id": "top-25",
+        "opposingId": "opposing-4",
+        "content": "The owner of the AI's work is a significant concern in AI and copyright issues",
+        "group": 10,
+        "slideId": "slide3",
+        "timestamp": 84
+    },
+    {
+        "id": "top-26",
+        "opposingId": "opposing-5",
+        "content": "Past issues in music industry show that artists can unintentionally infringe copyright",
+        "group": 10,
+        "slideId": "slide1",
+        "timestamp": 157
+    },
+    {
+        "id": "top-27",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 11,
+        "slideId": "slide2",
+        "timestamp": 32
+    },
+    {
+        "id": "top-28",
+        "opposingId": "opposing-4",
+        "content": "The owner of the AI's work is a significant concern in AI and copyright issues",
+        "group": 11,
+        "slideId": "slide3",
+        "timestamp": 62
+    },
+    {
+        "id": "top-29",
+        "opposingId": "opposing-3",
+        "content": "Existing IP should not be used as training data for generative AI",
+        "group": 11,
+        "slideId": "slide2",
+        "timestamp": 25
+    },
+    {
+        "id": "top-30",
+        "opposingId": "opposing-4",
+        "content": "Unclear ownership of AI-generated content is a problem",
+        "group": 11,
+        "slideId": "slide3",
+        "timestamp": 138
+    },
+    {
+        "id": "top-31",
+        "opposingId": "opposing-11",
+        "content": "Intellectual property might be improperly used in creating ML training datasets",
+        "group": 11,
+        "slideId": "slide2",
+        "timestamp": 138
+    },
+    {
+        "id": "top-32",
+        "opposingId": "opposing-3",
+        "content": "Existing IP should not be used as training data for generative AI",
+        "group": 12,
+        "slideId": "slide2",
+        "timestamp": 243
+    },
+    {
+        "id": "top-33",
+        "opposingId": "opposing-9",
+        "content": "Legal regulation of AI is difficult to monitor",
+        "group": 12,
+        "slideId": "slide3",
+        "timestamp": 346
+    },
+    {
+        "id": "top-34",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 13,
+        "slideId": "slide2",
+        "timestamp": 64
+    },
+    {
+        "id": "top-35",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 14,
+        "slideId": "slide2",
+        "timestamp": 32
+    },
+    {
+        "id": "top-36",
+        "opposingId": "opposing-4",
+        "content": "The owner of the AI's work is a significant concern in AI and copyright issues",
+        "group": 14,
+        "slideId": "slide3",
+        "timestamp": 114
+    },
+    {
+        "id": "top-37",
+        "opposingId": "opposing-8",
+        "content": "AI can be trained on protected work without permission",
+        "group": 14,
+        "slideId": "slide2",
+        "timestamp": 32
+    },
+    {
+        "id": "top-38",
+        "opposingId": "opposing-5",
+        "content": "Past issues in music industry show that artists can unintentionally infringe copyright",
+        "group": 14,
+        "slideId": "slide1",
+        "timestamp": 91
+    },
+    {
+        "id": "top-39",
+        "opposingId": "opposing-4",
+        "content": "It is unclear who owns the content that AI generates",
+        "group": 14,
+        "slideId": "slide3",
+        "timestamp": 32
+    },
+    {
+        "id": "top-40",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 16,
+        "slideId": "slide2",
+        "timestamp": 39
+    },
+    {
+        "id": "top-41",
+        "opposingId": "opposing-1",
+        "content": "Exacerbates the issue of copyright infringement",
+        "group": 16,
+        "slideId": "slide1",
+        "timestamp": 39
+    },
+    {
+        "id": "top-42",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 18,
+        "slideId": "slide2",
+        "timestamp": 92
+    },
+    {
+        "id": "top-43",
+        "opposingId": "opposing-8",
+        "content": "AI can be trained on protected work without permission",
+        "group": 18,
+        "slideId": "slide2",
+        "timestamp": 68
+    },
+    {
+        "id": "top-44",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 19,
+        "slideId": "slide2",
+        "timestamp": 98
+    },
+    {
+        "id": "top-45",
+        "opposingId": "opposing-4",
+        "content": "The owner of the AI's work is a significant concern in AI and copyright issues",
+        "group": 19,
+        "slideId": "slide3",
+        "timestamp": 46
+    },
+    {
+        "id": "top-46",
+        "opposingId": "opposing-11",
+        "content": "Intellectual property might be improperly used in creating ML training datasets",
+        "group": 19,
+        "slideId": "slide2",
+        "timestamp": 206
+    },
+    {
+        "id": "top-47",
+        "opposingId": "opposing-7",
+        "content": "Clear legal frameworks are needed to define ownership and usage rights for AI-generated content",
+        "group": 19,
+        "slideId": "slide3",
+        "timestamp": 168
+    },
+    {
+        "id": "top-48",
+        "opposingId": "opposing-4",
+        "content": "Unclear ownership of AI-generated content is a problem",
+        "group": 19,
+        "slideId": "slide3",
+        "timestamp": 400
+    },
+    {
+        "id": "top-49",
+        "opposingId": "opposing-1",
+        "content": "Generative AI's use of copyrighted datasets without permission contributes to copyright infringement",
+        "group": 20,
+        "slideId": "slide2",
+        "timestamp": 46
+    },
+    {
+        "id": "top-50",
+        "opposingId": "opposing-4",
+        "content": "The owner of the AI's work is a significant concern in AI and copyright issues",
+        "group": 20,
+        "slideId": "slide3",
+        "timestamp": 218
+    },
+    {
+        "id": "top-51",
+        "opposingId": "opposing-3",
+        "content": "Existing IP should not be used as training data for generative AI",
+        "group": 20,
+        "slideId": "slide2",
+        "timestamp": 72
+    },
+    {
+        "id": "top-52",
+        "opposingId": "opposing-8",
+        "content": "AI can be trained on protected work without permission",
+        "group": 20,
+        "slideId": "slide2",
+        "timestamp": 212
+    },
+    {
+        "id": "top-53",
+        "opposingId": "opposing-15",
+        "content": "Everyday users having access to create derivative works based on this model is problematic",
+        "group": 20,
+        "slideId": "slide1",
+        "timestamp": 72
+    }
+]

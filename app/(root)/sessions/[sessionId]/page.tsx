@@ -260,7 +260,7 @@ export default function SessionPage({ params }: SessionPageProps) {
     };
 
     const handleViewFullDashboard = () => {
-    router.push(`/session-dashboard/${sessionId}`);
+    router.push(`${window.location.origin}/monitor/${sessionData.id}`);
     };
 
     const formatTimeLeft = (timeLeftInSeconds: number | null): string => {

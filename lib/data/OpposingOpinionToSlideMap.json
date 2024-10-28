@@ -1,0 +1,107 @@
+[
+    {
+        "id": "opposing-1",
+        "content": "Using copyrighted datasets for AI training is fair use and doesn't constitute infringement",
+        "group": 2,
+        "slideId": "slide2",
+        "timestamp": 120
+    },
+    {
+        "id": "opposing-2",
+        "content": "AI-generated content should be eligible for copyright protection",
+        "group": 11,
+        "slideId": "slide3",
+        "timestamp": 180
+    },
+    {
+        "id": "opposing-3",
+        "content": "The use of copyrighted material in AI training is transformative and should be permitted",
+        "group": 13,
+        "slideId": "slide2",
+        "timestamp": 240
+    },
+    {
+        "id": "opposing-4",
+        "content": "Ownership of AI-generated work is clear: it belongs to the AI's creator or operator",
+        "group": 19,
+        "slideId": "slide3",
+        "timestamp": 300
+    },
+    {
+        "id": "opposing-5",
+        "content": "AI models enhance and inspire artists rather than infringe on their rights",
+        "group": 12,
+        "slideId": "slide1",
+        "timestamp": 150
+    },
+    {
+        "id": "opposing-6",
+        "content": "Monetization of AI-generated content is ethical and should be encouraged",
+        "group": 13,
+        "slideId": "slide1",
+        "timestamp": 210
+    },
+    {
+        "id": "opposing-7",
+        "content": "Existing IP laws are sufficient to handle AI-generated works",
+        "group": 11,
+        "slideId": "slide3",
+        "timestamp": 270
+    },
+    {
+        "id": "opposing-8",
+        "content": "AI can be trained on protected work as it falls under fair use",
+        "group": 14,
+        "slideId": "slide2",
+        "timestamp": 330
+    },
+    {
+        "id": "opposing-9",
+        "content": "Lenient regulations on AI are necessary for technological progress",
+        "group": 8,
+        "slideId": "slide3",
+        "timestamp": 190
+    },
+    {
+        "id": "opposing-10",
+        "content": "AI-generated content can be highly original and deserving of copyright",
+        "group": 12,
+        "slideId": "slide3",
+        "timestamp": 250
+    },
+    {
+        "id": "opposing-11",
+        "content": "Intellectual property use in ML training datasets is transformative and legal",
+        "group": 5,
+        "slideId": "slide2",
+        "timestamp": 280
+    },
+    {
+        "id": "opposing-12",
+        "content": "AI training on copyrighted data benefits society and should be permitted",
+        "group": 7,
+        "slideId": "slide2",
+        "timestamp": 310
+    },
+    {
+        "id": "opposing-13",
+        "content": "Current copyright laws are adequate for AI-generated works",
+        "group": 16,
+        "slideId": "slide3",
+        "timestamp": 340
+    },
+    {
+        "id": "opposing-14",
+        "content": "AI companies shouldn't need to compensate artists for using publicly available work in training",
+        "group": 9,
+        "slideId": "slide1",
+        "timestamp": 200
+    },
+    {
+        "id": "opposing-15",
+        "content": "Open-source AI models promote innovation and benefit society",
+        "group": 18,
+        "slideId": "slide2",
+        "timestamp": 230
+    }
+]

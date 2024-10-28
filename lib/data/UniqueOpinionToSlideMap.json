@@ -1,0 +1,122 @@
+[
+    {
+        "id": "unique-1",
+        "content": "AI should pay royalties to the data it was trained on",
+        "group": 2,
+        "slideId": "slide2",
+        "timestamp": 140,
+        "uniquenessScore": 85
+    },
+    {
+        "id": "unique-2",
+        "content": "There should be a universal basic income funded by AI productivity",
+        "group": 13,
+        "slideId": "slide4",
+        "timestamp": 220,
+        "uniquenessScore": 80
+    },
+    {
+        "id": "unique-3",
+        "content": "AI systems should be considered tools, not entities",
+        "group": 8,
+        "slideId": "slide1",
+        "timestamp": 180,
+        "uniquenessScore": 78
+    },
+    {
+        "id": "unique-4",
+        "content": "AI-generated art should have a distinct copyright category",
+        "group": 5,
+        "slideId": "slide3",
+        "timestamp": 260,
+        "uniquenessScore": 82
+    },
+    {
+        "id": "unique-5",
+        "content": "Blockchain could be used to track AI data usage and attributions",
+        "group": 11,
+        "slideId": "slide2",
+        "timestamp": 300,
+        "uniquenessScore": 88
+    },
+    {
+        "id": "unique-6",
+        "content": "AI models should have built-in bias detection and correction",
+        "group": 7,
+        "slideId": "slide1",
+        "timestamp": 190,
+        "uniquenessScore": 79
+    },
+    {
+        "id": "unique-7",
+        "content": "There should be an 'AI content' label for all AI-generated works",
+        "group": 16,
+        "slideId": "slide3",
+        "timestamp": 240,
+        "uniquenessScore": 76
+    },
+    {
+        "id": "unique-8",
+        "content": "AI companies should contribute to a global AI ethics fund",
+        "group": 9,
+        "slideId": "slide4",
+        "timestamp": 280,
+        "uniquenessScore": 84
+    },
+    {
+        "id": "unique-9",
+        "content": "Open source AI models should receive tax benefits",
+        "group": 18,
+        "slideId": "slide2",
+        "timestamp": 320,
+        "uniquenessScore": 81
+    },
+    {
+        "id": "unique-10",
+        "content": "AI-generated inventions should have shorter patent terms",
+        "group": 14,
+        "slideId": "slide3",
+        "timestamp": 200,
+        "uniquenessScore": 77
+    },
+    {
+        "id": "unique-11",
+        "content": "AI should be required to cite its sources in generated content",
+        "group": 6,
+        "slideId": "slide1",
+        "timestamp": 230,
+        "uniquenessScore": 83
+    },
+    {
+        "id": "unique-12",
+        "content": "AI training data should be subject to 'right to be forgotten' laws",
+        "group": 12,
+        "slideId": "slide2",
+        "timestamp": 270,
+        "uniquenessScore": 86
+    },
+    {
+        "id": "unique-13",
+        "content": "AI-generated content should have an expiration date for copyright",
+        "group": 19,
+        "slideId": "slide3",
+        "timestamp": 310,
+        "uniquenessScore": 79
+    },
+    {
+        "id": "unique-14",
+        "content": "A new profession of 'AI trainers' should be legally recognized",
+        "group": 15,
+        "slideId": "slide4",
+        "timestamp": 250,
+        "uniquenessScore": 82
+    },
+    {
+        "id": "unique-15",
+        "content": "AI should have a 'creativity quotient' to determine originality",
+        "group": 20,
+        "slideId": "slide1",
+        "timestamp": 290,
+        "uniquenessScore": 85
+    }
+]
