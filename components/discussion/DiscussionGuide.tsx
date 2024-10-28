@@ -177,9 +177,21 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
 
   const handleSubmit = async () => {
     try {
-      // Here you would typically save the answers to your backend
-      console.log("Submitted answers:", answers);
-      
+      // Save answers to Supabase
+      const { data, error } = await supabaseClient
+        .from('answers')  
+        .insert([
+          {
+            session_id: session?.id,
+            user_id: session?.created_by,
+            answers: answers,
+            submitted_at: new Date().toISOString()
+          }
+        ])
+        .select();
+  
+      if (error) throw error;
+  
       // Clear localStorage after successful submission
       localStorage.removeItem('timeLeft');
       localStorage.removeItem('timerTimestamp');
