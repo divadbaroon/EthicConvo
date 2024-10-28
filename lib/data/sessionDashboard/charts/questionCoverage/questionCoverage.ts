@@ -1,4 +1,4 @@
-import { TimeSeriesData } from '@/types/graphTypes';
+import { TimeSeriesData } from '@/types';
 
 // Function to generate faster-rising timestamps up to 610
 const generateFasterRisingData = (values: number[], maxTimestamp: number): TimeSeriesData[] => {

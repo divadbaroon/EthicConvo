@@ -1,4 +1,4 @@
-import { TimeSeriesData } from '@/types/graphTypes';
+import { TimeSeriesData } from '@/types';
 
 // Question 1: Problem Understanding
 export const participationRateQ1: TimeSeriesData[] = [

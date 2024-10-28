@@ -1,4 +1,4 @@
-import { TimeSeriesData, TopicData } from '@/types/graphTypes';
+import { TimeSeriesData, TopicData } from '@/types';
 
 // Define popular opinions data for each question with progressing counts
 export const popularOpinionsQ1: TopicData[] = [

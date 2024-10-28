@@ -1,4 +1,4 @@
-import { TimeSeriesData, TopicData } from '@/types/graphTypes';
+import { TimeSeriesData, TopicData } from '@/types';
 
 // Question 1: Problem Understanding
 export const keywordTrendsQ1: TopicData[] = [
