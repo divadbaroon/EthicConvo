@@ -131,7 +131,7 @@ export default function SessionPage({ params }: SessionPageProps) {
     const generateInviteLink = () => {
     if (sessionData) {
         // Use session ID instead of number
-        const link = `${window.location.origin}/join/${sessionData.id}/group`;
+        const link = `${window.location.origin}/join/${sessionData.id}`;
         setInviteLink(link);
     }
     };
