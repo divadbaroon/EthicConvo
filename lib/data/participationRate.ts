@@ -1,15 +1,15 @@
 export const discussionTasks: { [key: number]: DiscussionTask } = {
   1: {
     title: "Problem Understanding",
-    subtitle: "What specific privacy vulnerabilities arise from facial recognition technology's ability to detect intimate traits with accuracy exceeding human capabilities?"
+    subtitle: "What are the primary causes of copyright infringement concerns with generative AI?"
   },
   2: {
     title: "Technical Analysis",
-    subtitle: "How does the widespread deployment of facial recognition systems in everyday settings (social media, public spaces, government surveillance) amplify these privacy risks?"
+    subtitle: "How do the technology's mechanisms and the use of copyrighted material contribute to this issue?"
   },
   3: {
     title: "Proposed solutions",
-    subtitle: "What policy changes or technological safeguards should be implemented to protect sensitive personal attributes from automated detection?"
+    subtitle: "What strategies or legal frameworks could help address copyright challenges in the context of generative AI?"
   }
 };
 
@@ -139,13 +139,6 @@ export const AVAILABLE_CHARTS: ChartConfig[] = [
     visible: true
   },
   {
-    id: 'questionCoverage',
-    title: 'Question Coverage',
-    dataKey: 'questionCoverage',
-    type: 'percentage',
-    visible: true
-  },
-  {
     id: 'groupAnswers',
     title: 'Group Answers',
     dataKey: 'groupAnswers',
@@ -153,16 +146,16 @@ export const AVAILABLE_CHARTS: ChartConfig[] = [
     visible: true
   },
   {
-    id: 'ethicalPerspectives',
-    title: 'Ethical Perspectives',
-    dataKey: 'ethicalPerspectives',
+    id: 'popularOpinions',
+    title: 'Popular Opinions',
+    dataKey: 'popularOpinions',
     type: 'percentage',
     visible: false
   },
   {
-    id: 'popularOpinions',
-    title: 'Popular Opinions',
-    dataKey: 'popularOpinions',
+    id: 'ethicalPerspectives',
+    title: 'Ethical Perspectives',
+    dataKey: 'ethicalPerspectives',
     type: 'percentage',
     visible: false
   },
