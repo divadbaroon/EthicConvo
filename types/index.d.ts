@@ -47,6 +47,7 @@ interface Message {
   username: string;
   content: string;
   created_at: string;
+  audio_url?: string | null;
 }
 
 // ====== USER PARAMS

@@ -12,6 +12,7 @@ import { useParams } from 'next/navigation'
 import { supabaseClient } from '@/lib/database/supabase/client'
 import { toast } from "sonner"
 import { analyzeMessages } from '@/lib/actions/metric.actions'
+import AudioInput from '@/components/discussion/AudioInput'
 
 import type { Message, ChatWindowProps } from '@/types'
 
@@ -23,6 +24,8 @@ function ChatWindow({ groupId }: ChatWindowProps) {
   const [loading, setLoading] = useState(true);
   const [lastAnalysisTime, setLastAnalysisTime] = useState<number>(Date.now());
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const currentSessionId = Array.isArray(sessionId) ? sessionId[0] : sessionId;
 
   // Metrics analysis effect
   useEffect(() => {
@@ -109,10 +112,8 @@ function ChatWindow({ groupId }: ChatWindowProps) {
     };
   }, [groupId, user]);
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!user || !newMessage.trim()) return;
+  const handleSendMessage = async (messageContent: string) => {
+    if (!user || !messageContent.trim()) return;
 
     try {
       const { error } = await supabaseClient
@@ -121,7 +122,8 @@ function ChatWindow({ groupId }: ChatWindowProps) {
           group_id: groupId,
           user_id: user.id,
           username: user.username || 'Anonymous',
-          content: newMessage.trim()
+          content: messageContent.trim(),
+          audio_url: null
         });
 
       if (error) throw error;
@@ -131,6 +133,11 @@ function ChatWindow({ groupId }: ChatWindowProps) {
       console.error('Error sending message:', error);
       toast.error("Failed to send message");
     }
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSendMessage(newMessage);
   };
 
   const scrollToBottom = () => {
@@ -172,9 +179,9 @@ function ChatWindow({ groupId }: ChatWindowProps) {
             
             return (
               <div key={message.id} className="mb-4">
-                <div className={`flex items-end gap-2 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
+                <div className={`flex items-start gap-2 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
                   {!isCurrentUser && (
-                    <div className={`flex-shrink-0 ${isGrouped ? 'invisible' : ''}`}>
+                    <div className={`flex-shrink-0 ${isGrouped ? 'invisible' : ''} mt-6`}>
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={message.username} />
                         <AvatarFallback className="text-xs">{message.username[0]}</AvatarFallback>
@@ -215,7 +222,7 @@ function ChatWindow({ groupId }: ChatWindowProps) {
                     )}
                   </div>
                   {isCurrentUser && (
-                    <div className={`flex-shrink-0 ${isGrouped ? 'invisible' : ''}`}>
+                    <div className={`flex-shrink-0 ${isGrouped ? 'invisible' : ''} mt-6`}>
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={message.username} />
                         <AvatarFallback className="text-xs">{message.username[0]}</AvatarFallback>
@@ -230,7 +237,7 @@ function ChatWindow({ groupId }: ChatWindowProps) {
       </CardContent>
       <CardFooter className="flex-shrink-0 p-4 bg-gray-50">
         <form 
-          onSubmit={handleSendMessage}
+          onSubmit={handleFormSubmit}
           className="flex w-full items-center space-x-2"
         >
           <Input
@@ -239,6 +246,15 @@ function ChatWindow({ groupId }: ChatWindowProps) {
             onChange={(e) => setNewMessage(e.target.value)}
             className="flex-1"
           />
+           {user && currentSessionId ? (
+            <AudioInput
+              onMessageSubmit={handleSendMessage}
+              googleApiKey={process.env.NEXT_PUBLIC_GOOGLE_SPEECH_API_KEY || ''}
+              googleEndpoint={process.env.NEXT_PUBLIC_GOOGLE_SPEECH_ENDPOINT || ''}
+              userId={user.id}
+              sessionId={currentSessionId}
+            />
+          ) : null}
           <Button type="submit">Send</Button>
         </form>
       </CardFooter>
