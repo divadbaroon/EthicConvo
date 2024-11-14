@@ -38,7 +38,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import ArrowCanvas  from "@/components/discussionDashboard/ArrowCanvas"
 import axios from 'axios';
 
-const defaultChartTitle = ["Participation Rate", "Question Coverage", "Group Answers", "Ethical Perspectives", "Popular Opinions", "Keyword Trends"]
+import Component  from "@/components/charts/TestChart"
+
+const defaultChartTitle = ["Participation Rate", "Group Answers", "Ethical Perspectives", "Popular Opinions", "Keyword Trends"]
 
 const gptService = {
   getGraphLegends: async (discussionPointIndex: number, highLevelIdea: string) => {
@@ -853,9 +855,9 @@ const toggleDrawing = () => {
                     </div>
                   </div>
                 </div>
-                <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 w-full transition-all duration-300 ${
-                  'scale-95 opacity-100'
-                }`}>
+                <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 w-full transition-all duration-300 ${
+                'scale-95 opacity-100'
+              }`}>
                   {AVAILABLE_CHARTS
                     .filter(chart => 
                       pointSettings[point].visibleCharts[chart.id] && 
@@ -914,11 +916,14 @@ const toggleDrawing = () => {
                         size="sm"
                       >
                         Add Text Box
-                      </Button>     
+                      </Button>  
+                      <Button onClick={handleUndo} size="sm">
+                        Add Suggestion
+                      </Button>   
                     </div>
                   </div>
                 </div>
-
+                
                 <DropZone
                   id={`drop-${point}`}
                   onArrowComplete={handleArrowComplete}
@@ -968,12 +973,13 @@ const toggleDrawing = () => {
                       }[point];
 
                       return (
+
                         <DiscussionChart
                           key={item.chartId}
                           title={item.originalTitle}
                           timeSeriesData={item.timeSeriesData}
                           id={item.chartId}
-                          isDropped={false}
+                          isDropped={true}
                           currentTime={currentTime}
                           chartType={item.chartType}
                           discussionPoint={point}
@@ -981,7 +987,7 @@ const toggleDrawing = () => {
                             position: 'absolute',
                             left: `${item.position.x}px`,
                             top: `${item.position.y}px`,
-                            width: '30%',
+                            width: '50%',
                             zIndex: zIndices[item.chartId] || 1
                           }}
                           groupAnswers={groupAnswers}
@@ -993,6 +999,7 @@ const toggleDrawing = () => {
                           getEthicalPerspectives={questionData?.getEthicalPerspectives}
                           getPopularOpinions={questionData?.getPopularOpinions}
                           getKeywordTrends={questionData?.getKeywordTrends}
+                          addToCanvas={(text) => addTextBox(`slide-${point}`, text)}
                         />
                       );
                     })}
