@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { useSignUp, useAuth } from '@clerk/nextjs'
-import { AlertCircle, CheckCircle2, Info } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Info, ShieldCheck, Mail, Handshake } from 'lucide-react'
 
 interface ConsentPageProps {
   sessionId: string
@@ -94,17 +94,27 @@ export default function ConsentPage({
 
             <div className="bg-primary/5 p-6 rounded-lg my-6 border border-primary/10 shadow-sm">
                 <h3 className="text-2xl font-semibold mb-3 text-primary flex items-center">
-                    <CheckCircle2 className="mr-2 h-6 w-6" />
+                    <ShieldCheck className="mr-2 h-6 w-6" />
                     Data Collection & Privacy
                 </h3>
                 <p className="text-lg leading-relaxed mb-4">
                     <span>All student names, transcripts, and audio data are anonymized and securely stored. No retrieved data can be traced back to any individual student.</span>
                 </p>
-                </div>            
+            </div>
 
             <div className="bg-primary/5 p-6 rounded-lg my-6 border border-primary/10 shadow-sm">
               <h3 className="text-2xl font-semibold mb-3 text-primary flex items-center">
-                <Info className="mr-2 h-6 w-6" />
+                <Handshake className="mr-2 h-6 w-6" />
+                Voluntary Participation
+              </h3>
+              <p className="text-lg leading-relaxed mt-2">
+              Choosing not to participate will have no negative impact on your grades, academic standing, or any other aspect of your education.
+              </p>
+            </div>            
+
+            <div className="bg-primary/5 p-6 rounded-lg my-6 border border-primary/10 shadow-sm">
+              <h3 className="text-2xl font-semibold mb-3 text-primary flex items-center">
+                <Mail className="mr-2 h-6 w-6" />
                 Contact Information
               </h3>
               <p className="text-lg leading-relaxed">
