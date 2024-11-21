@@ -133,7 +133,7 @@ function ChatWindow({ groupId }: ChatWindowProps) {
   }, [groupId, user]);
 
   const handleSendMessage = async (messageContent: string) => {
-    if (!user || !messageContent.trim()) return;
+    if (!user || !messageContent.trim() || !hasConsented) return;
 
     try {
       const { error } = await supabaseClient
@@ -264,13 +264,12 @@ function ChatWindow({ groupId }: ChatWindowProps) {
           </CardContent>
 
           <CardFooter className="flex-shrink-0 p-4 bg-gray-50">
-            {!hasConsented ? (
-              <div className="w-full text-center p-4 bg-gray-100 rounded-lg">
-                <p className="text-gray-500">
-                  Please provide your consent on the previous page to participate in the discussion.
-                </p>
-              </div>
-            ) : (
+            <div className="w-full space-y-4">
+              {!hasConsented && (
+                  <p className="text-black-800 text-sm text-center">
+                    Please provide your consent on the previous page to participate in the discussion.
+                  </p>
+              )}
               <form 
                 onSubmit={handleFormSubmit}
                 className="flex w-full items-center space-x-2"
@@ -279,7 +278,7 @@ function ChatWindow({ groupId }: ChatWindowProps) {
                   placeholder="Type your message..."
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  className="flex-1"
+                  className={`flex-1 ${!hasConsented ? 'opacity-50 cursor-not-allowed' : ''}`}
                   disabled={!hasConsented}
                 />
                 {user && currentSessionId ? (
@@ -300,7 +299,7 @@ function ChatWindow({ groupId }: ChatWindowProps) {
                   Send
                 </Button>
               </form>
-            )}
+            </div>
           </CardFooter>
         </>
       )}
