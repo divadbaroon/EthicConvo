@@ -16,6 +16,8 @@ import AudioInput from '@/components/discussion/AudioInput'
 
 import type { Message, ChatWindowProps } from '@/types'
 
+import { getUserById } from '@/lib/actions/user.actions'
+
 function ChatWindow({ groupId }: ChatWindowProps) {
   const { sessionId } = useParams();
   const { user } = useUser();
@@ -24,8 +26,26 @@ function ChatWindow({ groupId }: ChatWindowProps) {
   const [loading, setLoading] = useState(true);
   const [lastAnalysisTime, setLastAnalysisTime] = useState<number>(Date.now());
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [hasConsented, setHasConsented] = useState<boolean | null>(null);
 
   const currentSessionId = Array.isArray(sessionId) ? sessionId[0] : sessionId;
+
+  // Add effect to fetch user's consent status
+  useEffect(() => {
+    const checkUserConsent = async () => {
+      if (!user) return;
+      
+      try {
+        const userData = await getUserById(user.id);
+        setHasConsented(userData?.has_consented ?? false);
+      } catch (error) {
+        console.error('Error fetching user consent:', error);
+        setHasConsented(false);
+      }
+    };
+
+    checkUserConsent();
+  }, [user]);
 
   // Metrics analysis effect
   useEffect(() => {
@@ -169,97 +189,123 @@ function ChatWindow({ groupId }: ChatWindowProps) {
         <CardTitle className="text-2xl text-center">Group Chat</CardTitle>
         <Separator/>
       </CardHeader>
-      <CardContent className="flex-grow overflow-hidden p-0" ref={scrollAreaRef}>
-        <ScrollArea className="h-full px-4">
-          {messages.map((message, index) => {
-            const prevMessage = index > 0 ? messages[index - 1] : null;
-            const isGrouped = shouldGroupMessage(message, prevMessage);
-            const isCurrentUser = message.user_id === user?.id;
-            const showTimestamp = !isGrouped || index === messages.length - 1;
-            
-            return (
-              <div key={message.id} className="mb-4">
-                <div className={`flex items-start gap-2 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
-                  {!isCurrentUser && (
-                    <div className={`flex-shrink-0 ${isGrouped ? 'invisible' : ''} mt-6`}>
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={message.username} />
-                        <AvatarFallback className="text-xs">{message.username[0]}</AvatarFallback>
-                      </Avatar>
+
+      {loading ? (
+        <div className="flex-grow flex items-center justify-center">
+          <div className="w-8 h-8 border-t-2 border-blue-500 rounded-full animate-spin" />
+        </div>
+      ) : (
+        <>
+          <CardContent className="flex-grow overflow-hidden p-0" ref={scrollAreaRef}>
+            <ScrollArea className="h-full px-4">
+              {messages.map((message, index) => {
+                const prevMessage = index > 0 ? messages[index - 1] : null;
+                const isGrouped = shouldGroupMessage(message, prevMessage);
+                const isCurrentUser = message.user_id === user?.id;
+                const showTimestamp = !isGrouped || index === messages.length - 1;
+                
+                return (
+                  <div key={message.id} className="mb-4">
+                    <div className={`flex items-start gap-2 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
+                      {!isCurrentUser && (
+                        <div className={`flex-shrink-0 ${isGrouped ? 'invisible' : ''} mt-6`}>
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={message.username} />
+                            <AvatarFallback className="text-xs">{message.username[0]}</AvatarFallback>
+                          </Avatar>
+                        </div>
+                      )}
+                      <div className={`flex flex-col ${isCurrentUser ? 'items-end' : 'items-start'} max-w-[65%]`}>
+                        {!isGrouped && (
+                          <span className="text-xs font-medium text-gray-500 mb-1">
+                            {message.username}
+                          </span>
+                        )}
+                        <div
+                          className={`inline-block px-4 py-2 
+                            ${isCurrentUser 
+                              ? 'bg-blue-500 text-white' 
+                              : 'bg-gray-100 text-gray-900'
+                            }
+                            ${isGrouped 
+                              ? 'rounded-2xl' 
+                              : isCurrentUser
+                                ? 'rounded-t-2xl rounded-l-2xl rounded-br-md' 
+                                : 'rounded-t-2xl rounded-r-2xl rounded-bl-md'
+                            }
+                          `}
+                        >
+                          <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
+                            {message.content}
+                          </p>
+                        </div>
+                        {showTimestamp && (
+                          <span className="text-[11px] text-gray-400 mt-1">
+                            {new Date(message.created_at).toLocaleTimeString([], { 
+                              hour: '2-digit', 
+                              minute: '2-digit' 
+                            })}
+                          </span>
+                        )}
+                      </div>
+                      {isCurrentUser && (
+                        <div className={`flex-shrink-0 ${isGrouped ? 'invisible' : ''} mt-6`}>
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={message.username} />
+                            <AvatarFallback className="text-xs">{message.username[0]}</AvatarFallback>
+                          </Avatar>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <div className={`flex flex-col ${isCurrentUser ? 'items-end' : 'items-start'} max-w-[65%]`}>
-                    {!isGrouped && (
-                      <span className="text-xs font-medium text-gray-500 mb-1">
-                        {message.username}
-                      </span>
-                    )}
-                    <div
-                      className={`inline-block px-4 py-2 
-                        ${isCurrentUser 
-                          ? 'bg-blue-500 text-white' 
-                          : 'bg-gray-100 text-gray-900'
-                        }
-                        ${isGrouped 
-                          ? 'rounded-2xl' 
-                          : isCurrentUser
-                            ? 'rounded-t-2xl rounded-l-2xl rounded-br-md' 
-                            : 'rounded-t-2xl rounded-r-2xl rounded-bl-md'
-                        }
-                      `}
-                    >
-                      <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
-                        {message.content}
-                      </p>
-                    </div>
-                    {showTimestamp && (
-                      <span className="text-[11px] text-gray-400 mt-1">
-                        {new Date(message.created_at).toLocaleTimeString([], { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        })}
-                      </span>
-                    )}
                   </div>
-                  {isCurrentUser && (
-                    <div className={`flex-shrink-0 ${isGrouped ? 'invisible' : ''} mt-6`}>
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={message.username} />
-                        <AvatarFallback className="text-xs">{message.username[0]}</AvatarFallback>
-                      </Avatar>
-                    </div>
-                  )}
-                </div>
+                );
+              })}
+            </ScrollArea>
+          </CardContent>
+
+          <CardFooter className="flex-shrink-0 p-4 bg-gray-50">
+            {!hasConsented ? (
+              <div className="w-full text-center p-4 bg-gray-100 rounded-lg">
+                <p className="text-gray-500">
+                  Please provide your consent on the previous page to participate in the discussion.
+                </p>
               </div>
-            );
-          })}
-        </ScrollArea>
-      </CardContent>
-      <CardFooter className="flex-shrink-0 p-4 bg-gray-50">
-        <form 
-          onSubmit={handleFormSubmit}
-          className="flex w-full items-center space-x-2"
-        >
-          <Input
-            placeholder="Type your message..."
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            className="flex-1"
-          />
-           {user && currentSessionId ? (
-            <AudioInput
-              onMessageSubmit={handleSendMessage}
-              googleApiKey={process.env.NEXT_PUBLIC_GOOGLE_SPEECH_API_KEY || ''}
-              googleEndpoint={process.env.NEXT_PUBLIC_GOOGLE_SPEECH_ENDPOINT || ''}
-              userId={user.id}
-              sessionId={currentSessionId}
-            />
-          ) : null}
-          <Button type="submit">Send</Button>
-        </form>
-      </CardFooter>
+            ) : (
+              <form 
+                onSubmit={handleFormSubmit}
+                className="flex w-full items-center space-x-2"
+              >
+                <Input
+                  placeholder="Type your message..."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  className="flex-1"
+                  disabled={!hasConsented}
+                />
+                {user && currentSessionId ? (
+                  <AudioInput
+                    onMessageSubmit={handleSendMessage}
+                    googleApiKey={process.env.NEXT_PUBLIC_GOOGLE_SPEECH_API_KEY || ''}
+                    googleEndpoint={process.env.NEXT_PUBLIC_GOOGLE_SPEECH_ENDPOINT || ''}
+                    userId={user.id}
+                    sessionId={currentSessionId}
+                    disabled={!hasConsented}
+                  />
+                ) : null}
+                <Button 
+                  type="submit" 
+                  disabled={!hasConsented}
+                  className={!hasConsented ? "opacity-50 cursor-not-allowed" : ""}
+                >
+                  Send
+                </Button>
+              </form>
+            )}
+          </CardFooter>
+        </>
+      )}
     </Card>
   );
-}
+};
 
 export default ChatWindow;
