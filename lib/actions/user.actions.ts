@@ -29,6 +29,7 @@ type User = {
   is_active: boolean
   created_at: string
   temp_password?: string
+  has_consented: boolean | null
 }
 
 // CREATE
@@ -247,5 +248,36 @@ export async function getUserBySessionId(sessionId: string) {
     console.error("Error in getUserBySessionId:", error);
     handleError(error);
     return null;
+  }
+}
+
+// Add this to your existing types
+type UpdateConsentParams = {
+  clerk_id: string
+  has_consented: boolean
+}
+
+// Add this new action
+export async function updateUserConsent({ clerk_id, has_consented }: UpdateConsentParams) {
+  try {
+    console.log("Updating consent for user:", clerk_id, "consent:", has_consented);
+
+    const { data, error } = await supabaseAdmin
+      .from('users')
+      .update({ has_consented })
+      .eq('clerk_id', clerk_id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error updating consent:", error);
+      throw error;
+    }
+
+    console.log("Consent update success:", data);
+    return data;
+  } catch (error) {
+    console.error("Error in updateUserConsent:", error);
+    throw error;
   }
 }

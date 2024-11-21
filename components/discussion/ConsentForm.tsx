@@ -5,7 +5,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { useSignUp, useAuth } from '@clerk/nextjs'
-import { AlertCircle, CheckCircle2, Info } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Info, ChevronDown, ChevronUp } from 'lucide-react'
+
+import { useUser } from '@clerk/nextjs';
+import { updateUserConsent } from '@/lib/actions/user.actions'
 
 interface ConsentPageProps {
   sessionId: string
@@ -24,51 +27,75 @@ export default function ConsentPage({
   const [isProcessing, setIsProcessing] = useState(false)
   const { isLoaded, signUp, setActive } = useSignUp()
   const { isSignedIn } = useAuth()
+  const { user } = useUser();
   
-  const handleAccept = async () => {
-    if (!isChecked || !isLoaded || isProcessing) return
-    
-    setIsProcessing(true)
+  // State for collapsible section
+  const [isExampleOpen, setIsExampleOpen] = useState(false)
 
+  const handleAccept = async () => {
+    if (isProcessing) return;
+    
+    setIsProcessing(true);
+    console.log('Starting update with consent:', isChecked);
+  
     try {
       if (isSignedIn) {
-        onAccountCreated()
-        return
+        if (user) {
+          await updateUserConsent({
+            clerk_id: user.id,
+            has_consented: Boolean(isChecked)
+          });
+        }
+        onAccountCreated();
+        return;
       }
-
+  
       if (!signUp) {
-        throw new Error('SignUp not available')
+        throw new Error('SignUp not available');
       }
-
-      const username = `student_${Math.random().toString(36).slice(2, 7)}`
-      const password = `pass_${Math.random().toString(36).slice(2, 10)}`
-
+  
+      const username = `student_${Math.random().toString(36).slice(2, 7)}`;
+      const password = `pass_${Math.random().toString(36).slice(2, 10)}`;
+  
       const signUpAttempt = await signUp.create({
         username,
         password,
-      })
-
-      await delay(1000)
-
+      });
+  
+      await delay(1000);
+  
       if (signUpAttempt.status === "complete") {
         if (signUpAttempt.createdSessionId) {
-          await setActive({ session: signUpAttempt.createdSessionId })
-          await delay(1000)
-          onAccountCreated()
+          await setActive({ session: signUpAttempt.createdSessionId });
+          await delay(1000);
+  
+          const clerkUserId = signUpAttempt.createdUserId;
+          if (clerkUserId) {
+            await updateUserConsent({
+              clerk_id: clerkUserId,
+              has_consented: Boolean(isChecked)
+            });
+          }
+  
+          onAccountCreated();
         } else {
-          throw new Error('No session ID created')
+          throw new Error('No session ID created');
         }
       } else {
-        throw new Error(`Signup incomplete: ${signUpAttempt.status}`)
+        throw new Error(`Signup incomplete: ${signUpAttempt.status}`);
       }
-
+  
     } catch (err) {
-      console.error('Sign up error:', err)
-      onError('Failed to create account. Please try again.')
+      console.error('Sign up error:', err);
+      onError('Failed to create account. Please try again.');
     } finally {
-      setIsProcessing(false)
+      setIsProcessing(false);
     }
-  }
+};
+  
+  // URLs for the audio samples
+  const originalVoiceUrl = 'https://colpzxhrkmkatbmnobft.supabase.co/storage/v1/object/public/audio-recordings/recordings/e958fa27-7074-4f34-b671-043d3070f455/user_2pAZGyT6WkYjbrDc0iY5uiHlEZq_2024-11-21T17:55:47.924Z.webm'
+  const anonymizedVoiceUrl = 'https://colpzxhrkmkatbmnobft.supabase.co/storage/v1/object/public/audio-recordings/recordings/e958fa27-7074-4f34-b671-043d3070f455/user_2pAZGyT6WkYjbrDc0iY5uiHlEZq_2024-11-21T17:55:49.031Z.webm'
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10 flex items-center justify-center p-4">
@@ -80,7 +107,9 @@ export default function ConsentPage({
         
         <CardContent className="space-y-8">
           <section className="prose dark:prose-invert max-w-none">
-            <div className="bg-primary/5 p-6 rounded-lg my-6 border border-primary/10 shadow-sm">
+
+             {/* Introduction to EthicConvo */}
+             <div className="bg-primary/5 p-6 rounded-lg my-6 border border-primary/10 shadow-sm">
               <h3 className="text-2xl font-semibold mb-3 text-primary flex items-center">
                 <Info className="mr-2 h-6 w-6" />
                 What is EthicConvo?
@@ -92,16 +121,54 @@ export default function ConsentPage({
               </p>
             </div>
 
-            <div className="bg-primary/5 p-6 rounded-lg my-6 border border-primary/10 shadow-sm">
-                <h3 className="text-2xl font-semibold mb-3 text-primary flex items-center">
-                    <CheckCircle2 className="mr-2 h-6 w-6" />
-                    Data Collection & Privacy
-                </h3>
-                <p className="text-lg leading-relaxed mb-4">
-                    <span>All student names, transcripts, and audio data are anonymized and securely stored. No retrieved data can be traced back to any individual student.</span>
-                </p>
-                </div>            
+           {/* Data Collection & Privacy Section */}
+           <div className="bg-primary/5 p-6 rounded-lg my-6 border border-primary/10 shadow-sm">
+              <h3 className="text-2xl font-semibold mb-3 text-primary flex items-center">
+                <CheckCircle2 className="mr-2 h-6 w-6" />
+                Data Collection & Privacy
+              </h3>
+              <p className="text-lg leading-relaxed mb-4">
+                All student names, transcripts, and audio data are anonymized and securely stored. No retrieved data can be traced back to any individual student.
+              </p>
+              
+              {/* Collapsible Section */}
+              <div>
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => setIsExampleOpen(!isExampleOpen)}
+                    className="flex items-center text-primary hover:underline focus:outline-none"
+                  >
+                    {isExampleOpen ? <ChevronUp className="h-5 w-5 mr-1" /> : <ChevronDown className="h-5 w-5 mr-1" />}
+                    See Example
+                  </button>
+                </div>
 
+                {isExampleOpen && (
+                  <div className="mt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Original Voice */}
+                      <div className="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 className="text-lg font-semibold mb-2">Original Voice</h4>
+                        <audio controls className="w-full">
+                          <source src={originalVoiceUrl} type="audio/mpeg" />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                      {/* Anonymized Voice */}
+                      <div className="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 className="text-lg font-semibold mb-2">Anonymized Voice</h4>
+                        <audio controls className="w-full">
+                          <source src={anonymizedVoiceUrl} type="audio/mpeg" />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Contact Information */}
             <div className="bg-primary/5 p-6 rounded-lg my-6 border border-primary/10 shadow-sm">
               <h3 className="text-2xl font-semibold mb-3 text-primary flex items-center">
                 <Info className="mr-2 h-6 w-6" />
@@ -109,11 +176,12 @@ export default function ConsentPage({
               </h3>
               <p className="text-lg leading-relaxed">
                 For questions or concerns about this platform, please contact your instructor 
-                or the EthicConvo support team (dbarron410@vt.edu).
+                or the EthicConvo support team (<a href="mailto:dbarron410@vt.edu" className="text-primary underline">dbarron410@vt.edu</a>).
               </p>
             </div>
           </section>
 
+          {/* Consent Checkbox */}
           <div className="flex items-center space-x-3 p-6 bg-secondary/20 rounded-lg border border-secondary">
             <Checkbox 
               id="consent" 
@@ -130,6 +198,7 @@ export default function ConsentPage({
           </div>
         </CardContent>
 
+        {/* Footer with Buttons */}
         <CardFooter className="flex flex-col sm:flex-row justify-end gap-4 pt-6 pb-8">
           <Button 
             variant="outline" 
@@ -140,7 +209,7 @@ export default function ConsentPage({
           </Button>
           <Button 
             variant="default" 
-            disabled={!isChecked || isProcessing}
+            disabled={isProcessing}
             onClick={handleAccept}
             className="w-full sm:w-auto text-base"
           >
