@@ -126,7 +126,7 @@ const AudioChatInput: React.FC<AudioChatInputProps> = ({
           retryCount++;
           if (retryCount <= maxRetries) {
             console.log(`Retrying transcription, attempt ${retryCount + 1}`);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 2000));
           }
         } catch (error) {
           console.error('Error getting transcription:', error);
