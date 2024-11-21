@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { toast } from "sonner"
+import { useRouter } from 'next/navigation'
 
 import { Session } from "@/types"
 import { supabaseClient } from "@/lib/database/supabase/client"
@@ -28,8 +29,8 @@ interface Answers {
 }
 
 function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
+  const router = useRouter();
   const [timeLeft, setTimeLeft] = useState(() => {
-    // Try to get saved time from localStorage first
     const savedTime = localStorage.getItem('timeLeft');
     const savedTimestamp = localStorage.getItem('timerTimestamp');
     
@@ -44,7 +45,6 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
   const [isRunning, setIsRunning] = useState(session?.status === 'active')
   const [loading, setLoading] = useState(true)
   const [answers, setAnswers] = useState(() => {
-    // Try to get saved answers from localStorage
     const savedAnswers = localStorage.getItem('discussionAnswers');
     return savedAnswers ? JSON.parse(savedAnswers) : {
       problem: "",
@@ -54,10 +54,8 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
   });
   const [isReviewOpen, setIsReviewOpen] = useState(false)
   const [isTimeUp, setIsTimeUp] = useState(() => {
-    // Check if timer was already up
     const timeUpState = localStorage.getItem('isTimeUp') === 'true';
     if (timeUpState) {
-      // If time was up, make sure dialog is shown
       setTimeout(() => setIsReviewOpen(true), 0);
     }
     return timeUpState;
@@ -78,11 +76,17 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
 
         if (error) throw error;
         if (data) {
-          // Only set time if not already stored
           if (!localStorage.getItem('timeLeft')) {
             setTimeLeft(data.time_left || 600);
           }
           setIsRunning(data.status === 'active');
+          
+          // Check if session is completed
+          if (data.status === 'completed' && !isSubmitted) {
+            toast.info("Session has ended!");
+            setIsTimeUp(true);
+            setIsReviewOpen(true);
+          }
         }
       } catch (error) {
         console.error('Error fetching session:', error);
@@ -109,6 +113,13 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
             setTimeLeft(updatedSession.time_left || 600);
           }
           setIsRunning(updatedSession.status === 'active');
+          
+          // Check if session was just completed
+          if (updatedSession.status === 'completed' && !isSubmitted) {
+            toast.info("Session has ended!");
+            setIsTimeUp(true);
+            setIsReviewOpen(true);
+          }
         }
       )
       .subscribe();
@@ -116,7 +127,7 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
     return () => {
       channel.unsubscribe();
     };
-  }, [session?.id]);
+  }, [session?.id, isSubmitted]);
 
   // Timer effect with persistence
   useEffect(() => {
@@ -177,7 +188,6 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
 
   const handleSubmit = async () => {
     try {
-      // Save answers to Supabase
       const { data, error } = await supabaseClient
         .from('answers')  
         .insert([
@@ -192,7 +202,6 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
   
       if (error) throw error;
   
-      // Clear localStorage after successful submission
       localStorage.removeItem('timeLeft');
       localStorage.removeItem('timerTimestamp');
       localStorage.removeItem('isTimeUp');
@@ -201,16 +210,15 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
       setIsSubmitted(true);
       setIsReviewOpen(false);
       
-      // Show success dialog before redirecting
       await toast.promise(
         new Promise((resolve) => setTimeout(resolve, 2000)),
         {
           loading: 'Submitting your answers...',
           success: () => {
             setTimeout(() => {
-              window.location.href = '/';
+              router.push(`/sessions/${session?.id}/review`);
             }, 1000);
-            return 'Answers submitted successfully! Redirecting...';
+            return 'Answers submitted successfully! Redirecting to review...';
           },
           error: 'Failed to submit answers',
         }

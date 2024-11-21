@@ -15,7 +15,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { ClipboardCopy, Users, Play, Check, BarChart2 } from "lucide-react"
+import { ClipboardCopy, Users, Play, Check, BarChart2, Square } from "lucide-react"
 
 import { Session, SessionPageProps } from "@/types"
 
@@ -239,6 +239,25 @@ export default function SessionPage({ params }: SessionPageProps) {
     setIsDialogOpen(false);
     };
 
+    const handleEndSession = async () => {
+        if (sessionData) {
+            try {
+                const updatedSession = await updateSession(sessionData.id, {
+                    status: 'completed'
+                });
+                if (updatedSession) {
+                    setSessionData(updatedSession);
+                    console.log("Session ended successfully");
+                } else {
+                    console.error("Failed to update session status");
+                }
+            } catch (error) {
+                console.error("Error ending session:", error);
+            }
+        }
+        setIsDialogOpen(false);
+    };
+
     const generateInviteLink = () => {
     if (sessionData) {
         // Use session ID instead of number
@@ -275,6 +294,11 @@ export default function SessionPage({ params }: SessionPageProps) {
     setIsDialogOpen(true); 
     };
 
+    const handleActionClick = () => {
+        setIsDialogOpen(true);
+    };
+
+
     if (!sessionData) {
     return <div className="container mx-auto px-4 py-8 flex justify-center items-center h-screen">Loading...</div>;  
     }
@@ -289,7 +313,7 @@ export default function SessionPage({ params }: SessionPageProps) {
                     <TabsList className="grid w-full grid-cols-4 mb-8">
                         <TabsTrigger value="details">1. Review Details</TabsTrigger>
                         <TabsTrigger value="invite">2. Invite Participants</TabsTrigger>
-                        <TabsTrigger value="start">3. Launch Session</TabsTrigger>
+                        <TabsTrigger value="start">3. Manage Session</TabsTrigger>
                         <TabsTrigger value="monitor" disabled={sessionData?.status !== 'active' && sessionData?.status !== 'completed'}>4. Monitor</TabsTrigger>
                     </TabsList>
                     
@@ -370,8 +394,14 @@ export default function SessionPage({ params }: SessionPageProps) {
                     <TabsContent value="start">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Launch Your Session</CardTitle>
-                                <CardDescription>Review status and start when ready</CardDescription>
+                                <CardTitle>
+                                    {sessionData?.status === 'active' ? 'End Your Session' : 'Launch Your Session'}
+                                </CardTitle>
+                                <CardDescription>
+                                    {sessionData?.status === 'active' 
+                                        ? 'Review progress and end when ready' 
+                                        : 'Review status and start when ready'}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="grid gap-4 md:grid-cols-3 mb-6">
@@ -382,7 +412,11 @@ export default function SessionPage({ params }: SessionPageProps) {
                                         </CardHeader>
                                         <CardContent>
                                             <div className="text-2xl font-bold">{sessionData.participant_count}</div>
-                                            <p className="text-xs text-muted-foreground">2 joined recently</p>
+                                            <p className="text-xs text-muted-foreground">
+                                                {recentActivity.recentJoins > 0 
+                                                    ? `${recentActivity.recentJoins} joined recently`
+                                                    : 'No recent joins'}
+                                            </p>
                                         </CardContent>
                                     </Card>
                                     <Card>
@@ -419,27 +453,40 @@ export default function SessionPage({ params }: SessionPageProps) {
                                 ) : (
                                     <>
                                         <p className="mb-4 text-muted-foreground">
-                                            Click below to start the timer and begin the discussion.
+                                            {sessionData.status === 'active' 
+                                                ? 'Click below to end the session and conclude the discussion.'
+                                                : 'Click below to start the timer and begin the discussion.'}
                                         </p>
-                                        <Button className="w-full" onClick={handleLaunchClick}>
-                                            Launch Session
-                                            <Play className="ml-2 h-4 w-4" />
+                                        <Button 
+                                            className={`w-full ${sessionData.status === 'active' ? 'bg-red-600 hover:bg-red-700' : ''}`} 
+                                            onClick={handleActionClick}
+                                        >
+                                            {sessionData.status === 'active' ? (
+                                                <>
+                                                    End Session
+                                                    <Square className="ml-2 h-4 w-4" />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Launch Session
+                                                    <Play className="ml-2 h-4 w-4" />
+                                                </>
+                                            )}
                                         </Button>
                                     </>
                                 )}
                             </CardContent>
                         </Card>
                     </TabsContent>
-
-
-                <TabsContent value="monitor">
+    
+                    <TabsContent value="monitor">
                         <Card>
                             <CardHeader>
                                 <CardTitle>Session Overview</CardTitle>
                                 <CardDescription>Quick insights into your session</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                {sessionData?.status === 'active' || sessionData?.status === 'completed'?  (
+                                {sessionData?.status === 'active' || sessionData?.status === 'completed' ? (
                                     <>
                                         <div className="grid grid-cols-3 gap-4 mb-6">
                                             <Card>
@@ -481,22 +528,31 @@ export default function SessionPage({ params }: SessionPageProps) {
                         </Card>
                     </TabsContent>
                 </Tabs>
-
+    
                 <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Confirm Session Launch</AlertDialogTitle>
+                            <AlertDialogTitle>
+                                {sessionData?.status === 'active' ? 'Confirm End Session' : 'Confirm Session Launch'}
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                                This will start the session and release participants into their groups. Session details cannot be changed after launch.
+                                {sessionData?.status === 'active' 
+                                    ? 'This will end the session and conclude all group discussions. This action cannot be undone.'
+                                    : 'This will start the session and release participants into their groups. Session details cannot be changed after launch.'}
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={handleLaunchSession}>Launch</AlertDialogAction>
+                            <AlertDialogAction 
+                                onClick={sessionData?.status === 'active' ? handleEndSession : handleLaunchSession}
+                                className={sessionData?.status === 'active' ? 'bg-red-600 hover:bg-red-700' : ''}
+                            >
+                                {sessionData?.status === 'active' ? 'End' : 'Launch'}
+                            </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
             </div>
         </div>
-    )
+    );
 }
