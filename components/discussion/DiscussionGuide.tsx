@@ -66,7 +66,7 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
   useEffect(() => {
     if (!session?.id) return;
 
-    const fetchCurrentSession = async () => {
+    const checkSessionStatus = async () => {
       try {
         const { data, error } = await supabaseClient
           .from('sessions')
@@ -89,14 +89,17 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
           }
         }
       } catch (error) {
-        console.error('Error fetching session:', error);
-      } finally {
-        setLoading(false);
+        console.error('Error checking session status:', error);
       }
     };
 
-    fetchCurrentSession();
+    // Initial check
+    checkSessionStatus();
 
+    // Set up polling every 3 seconds
+    const intervalId = setInterval(checkSessionStatus, 3000);
+
+    // Maintain the Supabase subscription as a backup
     const channel = supabaseClient
       .channel(`session-${session.id}`)
       .on(
@@ -124,7 +127,9 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
       )
       .subscribe();
 
+    // Cleanup both interval and subscription
     return () => {
+      clearInterval(intervalId);
       channel.unsubscribe();
     };
   }, [session?.id, isSubmitted]);
