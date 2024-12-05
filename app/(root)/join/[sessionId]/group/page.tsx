@@ -106,7 +106,7 @@ export default function GroupSelection({ params }: { params: { sessionId: string
 
       if (updatedGroup) {
         toast.success("Successfully joined the group")
-        router.push(`/join/${params.sessionId}/${groupToJoin.id}/waiting-room`)
+        router.push(`/join/${params.sessionId}/${groupToJoin.id}/discussion`)
       }
     } catch (error) {
       if (error instanceof Error && error.message === "Group is full") {
