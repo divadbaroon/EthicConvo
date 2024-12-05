@@ -18,6 +18,9 @@ import type { Message, ChatWindowProps } from '@/types'
 
 import { getUserById } from '@/lib/actions/user.actions'
 
+import ConsentModal from '@/components/discussion/ConsentModal';
+import { updateUserConsent } from '@/lib/actions/user.actions';
+
 function ChatWindow({ groupId }: ChatWindowProps) {
   const { sessionId } = useParams();
   const { user } = useUser();
@@ -29,6 +32,9 @@ function ChatWindow({ groupId }: ChatWindowProps) {
   const [hasConsented, setHasConsented] = useState<boolean | null>(null);
 
   const currentSessionId = Array.isArray(sessionId) ? sessionId[0] : sessionId;
+
+  const [showConsentModal, setShowConsentModal] = useState(false);
+  const [isProcessingConsent, setIsProcessingConsent] = useState(false);
 
   // Add effect to fetch user's consent status
   useEffect(() => {
@@ -80,7 +86,7 @@ function ChatWindow({ groupId }: ChatWindowProps) {
           lastAnalysis: new Date(lastAnalysisTime).toLocaleTimeString(),
         });
       }
-    }, 10000);
+    }, 15000);
   
     return () => clearInterval(analyzeInterval);
   }, [groupId, sessionId, messages, lastAnalysisTime, user]);
@@ -98,7 +104,7 @@ function ChatWindow({ groupId }: ChatWindowProps) {
           .order('created_at', { ascending: true });
 
         if (error) throw error;
-        setMessages(data || []);
+        setMessages((data || []) as Message[]);
         setLoading(false);
         scrollToBottom();
       } catch (error) {
@@ -131,6 +137,25 @@ function ChatWindow({ groupId }: ChatWindowProps) {
       channel.unsubscribe();
     };
   }, [groupId, user]);
+
+  const handleConsent = async (hasConsented: boolean) => {
+    if (!user) return;
+    
+    setIsProcessingConsent(true);
+    try {
+      await updateUserConsent({
+        clerk_id: user.id,
+        has_consented: hasConsented
+      });
+      setHasConsented(hasConsented);
+      setShowConsentModal(false);
+    } catch (error) {
+      console.error('Error updating consent:', error);
+      toast.error("Failed to update consent status");
+    } finally {
+      setIsProcessingConsent(false);
+    }
+  };
 
   const handleSendMessage = async (messageContent: string) => {
     if (!user || !messageContent.trim() || !hasConsented) return;
@@ -265,11 +290,20 @@ function ChatWindow({ groupId }: ChatWindowProps) {
 
           <CardFooter className="flex-shrink-0 p-4 bg-gray-50">
             <div className="w-full space-y-4">
-              {!hasConsented && (
-                  <p className="text-black-800 text-sm text-center">
-                    Please provide your consent on the previous page to participate in the discussion.
-                  </p>
-              )}
+            {!hasConsented && (
+              <div className="w-full flex flex-col items-center gap-2 mb-4">
+                <p className="text-black-800 text-sm text-center">
+                  Please provide your consent to participate in the discussion.
+                </p>
+                <Button 
+                  variant="outline"
+                  onClick={() => setShowConsentModal(true)}
+                  className="w-auto"
+                >
+                  Review Consent Form
+                </Button>
+              </div>
+            )}
               <form 
                 onSubmit={handleFormSubmit}
                 className="flex w-full items-center space-x-2"
@@ -299,6 +333,15 @@ function ChatWindow({ groupId }: ChatWindowProps) {
                   Send
                 </Button>
               </form>
+
+              {showConsentModal && (
+                <ConsentModal
+                  isOpen={showConsentModal}
+                  onClose={() => setShowConsentModal(false)}
+                  onConsent={handleConsent}
+                  isProcessing={isProcessingConsent}
+                />
+              )}
             </div>
           </CardFooter>
         </>
