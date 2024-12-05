@@ -96,7 +96,7 @@ export default function WaitingRoom({ params }: WaitingRoomProps) {
           <Card className="h-full">
             <CardContent className="h-full p-0">
               <ScrollArea className="h-full px-0">
-                <DiscussionGuide session={session} mode="waiting-room"/>
+                <DiscussionGuide session={session} mode="waiting-room" groupId={params.groupId}/>
               </ScrollArea>
             </CardContent>
           </Card>
