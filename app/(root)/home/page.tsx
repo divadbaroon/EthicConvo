@@ -48,8 +48,6 @@ const Homepage = () => {
           </div>
 
           <hr className="my-8 border-t border-gray-200" />
-
-          {/* Placeholder for video */}
         </div>
       </main>
     </div>
