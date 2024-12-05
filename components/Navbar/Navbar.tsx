@@ -40,6 +40,9 @@ const NavLink = ({ href, children, className }: NavLinkProps) => {
 const Navbar = () => {
   const pathname = usePathname();
 
+  // Add this new check for /join/ URLs
+  const logoHref = pathname.startsWith('/join/') ? '/sessions' : '/';
+
   // More specific path checking
   const isRootPath = ['/home', '/home/about', '/home/researchers', '/sessions'].includes(pathname);
   const isSessionPathWithId = pathname.match(/^\/sessions\/[\w-]+/) || 
@@ -49,7 +52,7 @@ const Navbar = () => {
     <Card className="sticky top-0 z-50 w-full bg-card py-3 px-4 border-0 border-b border-gray-200 flex items-center justify-between gap-6 rounded-2xl mt-5">
       <div className="flex items-center gap-4">
         <Link 
-          href="/" 
+          href={logoHref}
           className="inline-block transition-transform duration-300 hover:scale-105"
         >
           <EthicConvoLogo className="text-primary w-48 h-8 -mt-2" />
