@@ -310,10 +310,9 @@ export default function SessionPage({ params }: SessionPageProps) {
                 <p className="text-lg text-muted-foreground mb-8">Manage and prepare your session</p>
                 
                 <Tabs defaultValue="details" className="w-full">
-                    <TabsList className="grid w-full grid-cols-4 mb-8">
+                    <TabsList className="grid w-full grid-cols-3 mb-8">
                         <TabsTrigger value="details">1. Review Details</TabsTrigger>
                         <TabsTrigger value="invite">2. Invite Participants</TabsTrigger>
-                        <TabsTrigger value="start">3. Manage Session</TabsTrigger>
                         <TabsTrigger value="monitor" disabled={sessionData?.status !== 'active' && sessionData?.status !== 'completed'}>4. Monitor</TabsTrigger>
                     </TabsList>
                     
