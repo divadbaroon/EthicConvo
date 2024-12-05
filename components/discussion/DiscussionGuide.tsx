@@ -8,28 +8,27 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
 import { toast } from "sonner"
-
+import { Input } from "@/components/ui/input";
 import { Session } from "@/types"
 import { supabaseClient } from "@/lib/database/supabase/client"
 
 export interface DiscussionGuideProps {
   session: Session | null;
   mode: 'usage-check' | 'waiting-room' | 'discussion';
+  groupId: string;
 }
 
 interface Answers {
   [key: string]: string;
-  problem: string;
-  technology: string;
-  solutions: string;
 }
 
-function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
+interface SharedAnswers {
+  [key: string]: string[];
+}
+
+function DiscussionGuide({ session, mode, groupId }: DiscussionGuideProps) {
   const [timeLeft, setTimeLeft] = useState(() => {
-    // Try to get saved time from localStorage first
     const savedTime = localStorage.getItem('timeLeft');
     const savedTimestamp = localStorage.getItem('timerTimestamp');
     
@@ -43,26 +42,23 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
   
   const [isRunning, setIsRunning] = useState(session?.status === 'active')
   const [loading, setLoading] = useState(true)
-  const [answers, setAnswers] = useState(() => {
-    // Try to get saved answers from localStorage
+  const [answers, setAnswers] = useState<Answers>(() => {
     const savedAnswers = localStorage.getItem('discussionAnswers');
-    return savedAnswers ? JSON.parse(savedAnswers) : {
-      problem: "",
-      technology: "",
-      solutions: ""
-    };
+    return savedAnswers ? JSON.parse(savedAnswers) : {};
   });
+  const [sharedAnswers, setSharedAnswers] = useState<SharedAnswers>({});
   const [isReviewOpen, setIsReviewOpen] = useState(false)
   const [isTimeUp, setIsTimeUp] = useState(() => {
-    // Check if timer was already up
     const timeUpState = localStorage.getItem('isTimeUp') === 'true';
     if (timeUpState) {
-      // If time was up, make sure dialog is shown
       setTimeout(() => setIsReviewOpen(true), 0);
     }
     return timeUpState;
   });
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  const [editingPoint, setEditingPoint] = useState<{ index: number, bulletIndex: number } | null>(null);
+  const [editedContent, setEditedContent] = useState("");
 
   // Subscribe to session changes and update timer
   useEffect(() => {
@@ -78,7 +74,6 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
 
         if (error) throw error;
         if (data) {
-          // Only set time if not already stored
           if (!localStorage.getItem('timeLeft')) {
             setTimeLeft(data.time_left || 600);
           }
@@ -118,12 +113,57 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
     };
   }, [session?.id]);
 
+  // Subscribe to shared answers changes
+  useEffect(() => {
+    if (!session?.id || !groupId) return;
+
+    const fetchSharedAnswers = async () => {
+      const { data, error } = await supabaseClient
+        .from('shared_answers')
+        .select('*')
+        .eq('session_id', session.id)
+        .eq('group_id', groupId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching shared answers:', error);
+      }
+      if (data?.answers && typeof data.answers === 'object') {
+        setSharedAnswers(data.answers as SharedAnswers);
+      }
+    };
+
+    fetchSharedAnswers();
+
+    const channel = supabaseClient
+      .channel(`shared-answers-${groupId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'shared_answers',
+          filter: `group_id=eq.${groupId}`
+        },
+        (payload) => {
+          const newAnswers = (payload.new as any)?.answers;
+          if (newAnswers && typeof newAnswers === 'object') {
+            setSharedAnswers(newAnswers as SharedAnswers);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [session?.id, groupId]);
+
   // Timer effect with persistence
   useEffect(() => {
     let timer: NodeJS.Timeout;
     
     if (isRunning && timeLeft > 0 && mode === 'discussion') {
-      // Save current time and timestamp
       localStorage.setItem('timeLeft', timeLeft.toString());
       localStorage.setItem('timerTimestamp', Date.now().toString());
       
@@ -131,7 +171,6 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
         setTimeLeft(prevTime => {
           const newTime = Math.max(0, prevTime - 1);
           
-          // Update localStorage
           localStorage.setItem('timeLeft', newTime.toString());
           localStorage.setItem('timerTimestamp', Date.now().toString());
           
@@ -145,7 +184,6 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
       }, 1000);
     }
 
-    // If time is already up on mount and not submitted, show the review dialog
     if (timeLeft === 0 && !isSubmitted) {
       setIsTimeUp(true);
       setIsReviewOpen(true);
@@ -201,16 +239,15 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
       setIsSubmitted(true);
       setIsReviewOpen(false);
       
-      // Show success dialog before redirecting
       await toast.promise(
-        new Promise((resolve) => setTimeout(resolve, 2000)),
+        new Promise((resolve) => setTimeout(resolve, 3000)), // Increased delay to 3 seconds
         {
           loading: 'Submitting your answers...',
           success: () => {
             setTimeout(() => {
               window.location.href = '/';
-            }, 1000);
-            return 'Answers submitted successfully! Redirecting...';
+            }, 2000); // Additional 2 second delay after the toast
+            return 'Answers submitted successfully! You will be exited from the conversation shortly.';
           },
           error: 'Failed to submit answers',
         }
@@ -244,11 +281,31 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
     );
   }
 
-  const renderAccordionContent = (point: string, index: number) => {
-    if (mode === 'waiting-room') {
-      return null;
+  const handleSaveEdit = async (pointIndex: number, bulletIndex: number, newContent: string) => {
+    try {
+      const updatedAnswers = { ...sharedAnswers };
+      updatedAnswers[`point${pointIndex}`][bulletIndex] = newContent;
+  
+      const { error } = await supabaseClient
+        .from('shared_answers')
+        .upsert({
+          session_id: session?.id,
+          group_id: groupId,
+          answers: updatedAnswers,
+          last_updated: new Date().toISOString()
+        });
+  
+      if (error) throw error;
+      setEditingPoint(null);
+      toast.success('Bullet point updated');
+    } catch (error) {
+      console.error('Error updating bullet point:', error);
+      toast.error('Failed to update bullet point');
     }
+  };
 
+  const renderAccordionContent = (point: string, index: number) => {
+    if (mode === 'waiting-room') return null;
     if (mode === 'usage-check') {
       return (
         <AccordionContent>
@@ -258,17 +315,75 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
         </AccordionContent>
       );
     }
-
+  
+    const bulletPoints = sharedAnswers[`point${index}`] || [];
+  
     return (
       <AccordionContent>
-        <Textarea 
-          placeholder="Enter your answer here"
-          value={answers[`point${index}` as keyof typeof answers] || ''}
-          onChange={(e) => handleInputChange(`point${index}` as keyof typeof answers, e.target.value)}
-        />
+        <div className="space-y-4">
+          {bulletPoints.length > 0 ? (
+            <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+              {bulletPoints.map((point, i) => (
+                <div key={i} className="flex items-start gap-2 group">
+                  <span className="text-gray-500 pt-1.5 -mt-1.5">•</span>
+                  {editingPoint?.index === index && editingPoint?.bulletIndex === i ? (
+                    <div className="flex-1 flex items-center gap-2">
+                      <Input
+                        className="flex-1"
+                        value={editedContent}
+                        onChange={(e) => setEditedContent(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleSaveEdit(index, i, editedContent);
+                          } else if (e.key === 'Escape') {
+                            setEditingPoint(null);
+                          }
+                        }}
+                        autoFocus
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() => handleSaveEdit(index, i, editedContent)}
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setEditingPoint(null)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex-1 flex items-start justify-between group">
+                      <p className="text-sm text-gray-600">{point}</p>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setEditingPoint({ index, bulletIndex: i });
+                          setEditedContent(point);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-gray-50 p-6 rounded-lg text-center">
+              <p className="text-sm text-gray-600 mt-1">
+                Key points will be generated as your group discusses this topic.
+              </p>
+            </div>
+          )}
+        </div>
       </AccordionContent>
     );
-  }
+  };
   
   return (
     <Card className={`w-full ${getCardHeight()} flex flex-col`}>
@@ -332,7 +447,6 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
         <Dialog 
           open={isReviewOpen} 
           onOpenChange={(open) => {
-            // Only allow closing if time isn't up
             if (!isTimeUp) {
               setIsReviewOpen(open);
             }
@@ -353,15 +467,67 @@ function DiscussionGuide({ session, mode }: DiscussionGuideProps) {
                       <span className="font-semibold text-lg min-w-[24px]">{index + 1}.</span>
                       <div className="space-y-4 flex-1">
                         <h4 className="font-semibold text-lg">{point}</h4>
-                        <div className="space-y-2">
-                          <Textarea
-                            id={`answer-${index}`}
-                            value={answers[`point${index}` as keyof typeof answers] || ""}
-                            onChange={(e) => handleInputChange(`point${index}` as keyof typeof answers, e.target.value)}
-                            className="min-h-[100px] w-full p-3 bg-gray-50"
-                            placeholder="Enter your answer here..."
-                          />
-                        </div>
+                        
+                        {/* Show shared bullet points in review */}
+                        {sharedAnswers[`point${index}`]?.length > 0 ? (
+                          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+                            {sharedAnswers[`point${index}`].map((point, i) => (
+                              <div key={i} className="flex items-start gap-2 group">
+                                <span className="text-gray-500 pt-1.5 -mt-1.5">•</span>
+                                {editingPoint?.index === index && editingPoint?.bulletIndex === i ? (
+                                  <div className="flex-1 flex items-center gap-2">
+                                    <Input
+                                      className="flex-1"
+                                      value={editedContent}
+                                      onChange={(e) => setEditedContent(e.target.value)}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                          handleSaveEdit(index, i, editedContent);
+                                        } else if (e.key === 'Escape') {
+                                          setEditingPoint(null);
+                                        }
+                                      }}
+                                      autoFocus
+                                    />
+                                    <Button
+                                      size="sm"
+                                      onClick={() => handleSaveEdit(index, i, editedContent)}
+                                    >
+                                      Save
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => setEditingPoint(null)}
+                                    >
+                                      Cancel
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <div className="flex-1 flex items-start justify-between group">
+                                    <p className="text-sm text-gray-600">{point}</p>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => {
+                                        setEditingPoint({ index, bulletIndex: i });
+                                        setEditedContent(point);
+                                      }}
+                                    >
+                                      Edit
+                                    </Button>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="bg-gray-50 p-6 rounded-lg text-center">                         
+                            <p className="text-sm text-gray-600 mt-1">
+                              Key points will be generated as your group discusses this topic.
+                            </p>                           
+                          </div>
+                        )}
                       </div>
                     </div>
                     {index < session.discussion_points.length - 1 && (
